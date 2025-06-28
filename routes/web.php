@@ -5,7 +5,9 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\KeluhKesahController;
 use App\Http\Controllers\BeritaPublicController;
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\PrestasiPublicController;
+use App\Http\Controllers\EkstrakurikulerPublicController;
 
 
 
@@ -27,14 +29,10 @@ Route::get('/pages/berita', [BeritaPublicController::class, 'index'])->name('pag
 
 Route::get('/pages/akademik/prestasi', [PrestasiPublicController::class, 'index'])->name('prestasi.public.index');
 
-Route::resource('ekstrakurikulers', EkstrakurikulerController::class)->except(['create', 'edit']); // <--- TAMBAHKAN BARIS INI
+Route::get('/pages/akademik/ekstrakulikuler', [EkstrakurikulerPublicController::class, 'index'])->name('ekstrakurikuler.public.index');
 
 Route::get('/pages/akademik/prestasi/{year}', [PrestasiPublicController::class, 'showByYear'])->name('prestasi.public.show-by-year');
 
-
-Route::get('/pages/akademik/ekstrakulikuler', function () {
-    return view('pages.akademik.ekstrakulikuler');
-});
 
 Route::get('/pages/PPDB', function () {
     return view('pages.PPDB');
@@ -77,9 +75,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard/user/siswa', [AuthController::class, 'siswaDashboard'])->name('dashboard.user.siswa');
     Route::get('/dashboard/admin/admin', [AuthController::class, 'adminDashboard'])->name('dashboard.admin.admin');
-    Route::get('/dashboard/admin/CRUD_berita', [AuthController::class, 'crudberita'])->name('dashboard.admin.CRUD_berita');
-    Route::get('/dashboard/admin/CRUD_ekstra', [AuthController::class, 'crudekstra'])->name('dashboard.admin.CRUD_ekstra');
-    Route::get('/dashboard/admin/CRUD_prestasi', [AuthController::class, 'crudprestasi'])->name('dashboard.admin.CRUD_prestasi');
 });
 
 // === KELUH KESAH ===
@@ -103,5 +98,3 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // ... (rute-rute lain untuk admin) ...
 });
-
-

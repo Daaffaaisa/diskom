@@ -6,7 +6,6 @@ use App\Models\Ekstrakurikuler; // Import Model Ekstrakurikuler
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log; // Jangan lupa import Log juga!
-use App\Http\Controllers\EkstrakurikulerController;
 
 class EkstrakurikulerController extends Controller
 {
@@ -63,7 +62,7 @@ class EkstrakurikulerController extends Controller
         ]);
 
         Log::info('Ekstrakurikuler created successfully:', ['id' => $ekstrakurikuler->id, 'gambar_paths' => $gambarPaths]);
-        return response()->json($ekstrakurikuler, 201); // 201 Created
+        return response()->json($ekstrakurikuler, 201);
     }
 
     /**

@@ -21,10 +21,10 @@
       </nav>
     </aside>
 
-    <main class="flex-grow p-8 bg-white rounded-tl-lg shadow-inner">
+    <div class="flex-grow p-8 bg-white rounded-tl-lg shadow-inner">
       <section id="manage-berita"
-        class="admin-content-section active bg-blue-50 p-6 rounded-lg shadow-md border border-blue-200">
-        <h2 class="text-3xl font-extrabold text-blue-800 mb-6 border-b-4 border-blue-500 pb-2">
+        class="admin-content-section active bg-purple-50 p-6 rounded-lg shadow-md border border-purple-200">
+        <h2 class="text-3xl font-extrabold text-[#B7669A] mb-6 border-b-4 border-[#6F2C5C] pb-2">
           Manajemen Berita
         </h2>
 
@@ -65,7 +65,7 @@
             {{-- AKHIR DARI BAGIAN YANG DIUBAH --}}
             <div class="flex justify-end space-x-4">
               <button type="submit"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
+                class="bg-[#6F2C5C] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
                 <i class="fas fa-save mr-2"></i>Simpan Berita
               </button>
               <button type="button" id="cancelEditBerita"
@@ -95,9 +95,8 @@
 
       {{-- Manajemen Prestasi Section --}}
       <section id="manage-prestasi"
-        class="admin-content-section bg-blue-50 p-6 rounded-lg shadow-md border border-blue-200 hidden"
-        {{-- Tambahkan 'hidden' agar tidak tampil di awal --}}>
-        <h2 class="text-3xl font-extrabold text-blue-800 mb-6 border-b-4 border-blue-500 pb-2">
+        class="admin-content-section bg-purple-50 p-6 rounded-lg shadow-md border border-purple-200 hidden">
+        <h2 class="text-3xl font-extrabold text-[#B7669A] mb-6 border-b-4 border-[#6F2C5C] pb-2">
           Manajemen Prestasi
         </h2>
 
@@ -121,19 +120,17 @@
                 placeholder="Contoh: Siti Aisyah (Kelas IX A)" required />
             </div>
             <div>
-              <label for="prestasiPeriode" {{-- Ganti id menjadi prestasiPeriode --}}
+              <label for="prestasiPeriode"
                 class="block text-gray-700 text-sm font-bold mb-2">Tanggal/Bulan/Periode:</label>
-              <input type="text" id="prestasiPeriode" {{-- Ganti id menjadi prestasiPeriode --}}
+              <input type="text" id="prestasiPeriode"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Contoh: Mei 2024 atau Semester Ganjil 2023/2024" required />
             </div>
             <div>
-              <label for="prestasiTahun" {{-- ID baru untuk input tahun --}} class="block text-gray-700 text-sm font-bold mb-2">Tahun
-                Prestasi:</label>
-              <input type="number" {{-- Tipe number untuk tahun --}} id="prestasiTahun" {{-- ID baru untuk input tahun --}}
+              <label for="prestasiTahun" class="block text-gray-700 text-sm font-bold mb-2">Tahun Prestasi:</label>
+              <input type="number" id="prestasiTahun"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Contoh: 2024" min="1900" {{-- Batasan tahun minimal --}} max="{{ date('Y') + 5 }}"
-                {{-- Batasan tahun maksimal (tahun sekarang + 5) --}} required />
+                placeholder="Contoh: 2024" min="1900" max="{{ date('Y') + 5 }}" required />
             </div>
             <div>
               <label for="prestasiDescription" class="block text-gray-700 text-sm font-bold mb-2">Deskripsi
@@ -146,15 +143,15 @@
             <div>
               <label for="prestasiImageFiles" class="block text-gray-700 text-sm font-bold mb-2">Upload Gambar (Pilih
                 Banyak):</label>
-              <input type="file" id="prestasiImageFiles" name="gambar_baru[]" {{-- Penting: nama 'gambar_baru[]' dan 'multiple' --}}
+              <input type="file" id="prestasiImageFiles" name="gambar_baru[]"
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                multiple {{-- Untuk memungkinkan upload banyak file --}} accept="image/*" {{-- Hanya izinkan file gambar --}} />
+                multiple accept="image/*" />
               <div id="prestasiImagePreview" class="mt-2 grid grid-cols-2 gap-2"></div>
             </div>
             {{-- Akhir Bagian Upload Gambar --}}
             <div class="flex justify-end space-x-4">
               <button type="submit"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
+                class="bg-[#6F2C5C] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
                 <i class="fas fa-save mr-2"></i>Simpan Prestasi
               </button>
               <button type="button" id="cancelEditPrestasi"
@@ -174,7 +171,7 @@
               <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
                 <th class="py-3 px-6 text-left">Judul</th>
                 <th class="py-3 px-6 text-left">Pencapai</th>
-                <th class="py-3 px-6 text-left">Periode</th> {{-- Tambahkan kolom Periode --}}
+                <th class="py-3 px-6 text-left">Periode</th>
                 <th class="py-3 px-6 text-left">Aksi</th>
               </tr>
             </thead>
@@ -185,13 +182,14 @@
         </div>
       </section>
 
+      {{-- Manajemen Ekstrakurikuler Section --}}
       <section id="manage-ekstrakurikuler"
-        class="admin-content-section bg-blue-50 p-6 rounded-lg shadow-md border border-blue-200 hidden"
-        {{-- Tambahkan 'hidden' agar tidak tampil di awal --}}>
-        <h2 class="text-3xl font-extrabold text-blue-800 mb-6 border-b-4 border-blue-500 pb-2">
+        class="admin-content-section bg-purple-50 p-6 rounded-lg shadow-md border border-purple-200 hidden">
+        <h2 class="text-3xl font-extrabold text-[#B7669A] mb-6 border-b-4 border-[#6F2C5C] pb-2">
           Manajemen Ekstrakurikuler
         </h2>
 
+        {{-- Form Tambah/Edit Ekstrakurikuler --}}
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
           <h3 class="text-2xl font-bold text-gray-800 mb-4">
             Tambah/Edit Ekstrakurikuler
@@ -210,16 +208,19 @@
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Tulis deskripsi singkat ekstrakurikuler..." required></textarea>
             </div>
+            {{-- Bagian Upload Gambar untuk Ekstrakurikuler --}}
             <div>
-              <label for="ekskulImageUrl" class="block text-gray-700 text-sm font-bold mb-2">URL Gambar
-                (Opsional):</label>
-              <input type="url" id="ekskulImageUrl"
+              <label for="ekskulImageFiles" class="block text-gray-700 text-sm font-bold mb-2">Upload Gambar (Pilih
+                Banyak):</label>
+              <input type="file" id="ekskulImageFiles" name="gambar_baru[]" {{-- Penting: nama 'gambar_baru[]' dan 'multiple' --}}
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                placeholder="Contoh: https://placehold.co/400x250" />
+                multiple {{-- Untuk memungkinkan upload banyak file --}} accept="image/*" {{-- Hanya izinkan file gambar --}} />
+              <div id="ekskulImagePreview" class="mt-2 grid grid-cols-2 gap-2"></div>
             </div>
+            {{-- Akhir Bagian Upload Gambar --}}
             <div class="flex justify-end space-x-4">
               <button type="submit"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
+                class="bg-[#6F2C5C] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
                 <i class="fas fa-save mr-2"></i>Simpan Ekstrakurikuler
               </button>
               <button type="button" id="cancelEditEkskul"
@@ -231,6 +232,7 @@
           </form>
         </div>
 
+        {{-- Tabel Daftar Ekstrakurikuler --}}
         <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
           <h3 class="text-2xl font-bold text-gray-800 mb-4">Daftar Ekstrakurikuler</h3>
           <table class="min-w-full bg-white border border-gray-200">
@@ -242,10 +244,9 @@
               </tr>
             </thead>
             <tbody id="ekskulList" class="text-gray-700 text-sm">
+              {{-- Data ekstrakurikuler akan dimuat di sini oleh JavaScript --}}
             </tbody>
           </table>
         </div>
       </section>
-    </main>
-  </div>
-@endsection
+    @endsection

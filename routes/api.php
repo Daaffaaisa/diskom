@@ -2,9 +2,9 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\PrestasiController;
-use App\Http\Controllers\EkstrakurikulerController; // <--- PASTIKAN BARIS INI ADA DAN BENAR!
 
 /*
 |--------------------------------------------------------------------------

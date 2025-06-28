@@ -40,14 +40,12 @@
           <div id="profileDropdown"
             class="absolute top-full right-0 w-48 bg-white text-black rounded-lg shadow-xl hidden z-60 pt-3">
             @if (Auth::user()->role === 'admin')
-              <a href="{{ route('dashboard.admin.admin') }}" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
-                Admin</a>
-              <a href="{{ route('dashboard.admin.CRUD_berita') }}" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
-                Admin</a>
-              <a href="{{ route('dashboard.admin.admin') }}" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
+              <a href="{{ route('dashboard.admin.admin') }}"
+                class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
                 Admin</a>
             @else
-              <a href="{{ route('dashboard.user.siswa') }}" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
+              <a href="{{ route('dashboard.user.siswa') }}"
+                class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
                 Siswa</a>
               <a href="/dashboard/kalender" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Kalender Akademik</a>
               <a href="#" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Pembayaran</a>
