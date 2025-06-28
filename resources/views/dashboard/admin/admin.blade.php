@@ -257,8 +257,8 @@
 
       {{-- Manajemen User Section --}}
       <section id="manage-user"
-        class="admin-content-section bg-blue-50 p-6 rounded-lg shadow-md border border-blue-200 hidden">
-        <h2 class="text-3xl font-extrabold text-blue-800 mb-6 border-b-4 border-blue-500 pb-2">
+        class="admin-content-section bg-purple-50 p-6 rounded-lg shadow-md border border-purple-200 hidden">
+        <h2 class="text-3xl font-extrabold text-[#B7669A] mb-6 border-b-4 border-[#6F2C5C] pb-2">
           Manajemen User
         </h2>
 
@@ -296,12 +296,11 @@
                 <option value="">Pilih Role</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
-                <option value="siswa">Siswa</option>
               </select>
             </div>
             <div class="flex justify-end space-x-4">
               <button type="submit"
-                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
+                class="bg-[#6F2C5C] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
                 <i class="fas fa-save mr-2"></i>Simpan User
               </button>
               <button type="button" id="cancelEditUser"

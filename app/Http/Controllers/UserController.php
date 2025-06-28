@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User; // Import Model User
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash; // Untuk Hash::make() jika password tidak di-cast 'hashed' di model (tapi kita sudah)
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule; // Untuk validasi unique email kecuali diri sendiri
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException; // <--- TAMBAHKAN INI
 
 class UserController extends Controller
 {
@@ -17,7 +18,7 @@ class UserController extends Controller
     {
         // Ambil semua user, kecuali user yang sedang login saat ini (admin itu sendiri)
         // Order berdasarkan nama
-        $users = User::where('id', '!=', auth()->id()) // Jangan tampilkan admin yang sedang login
+        $users = User::where('id', '!=', auth()->id())
                      ->orderBy('name', 'asc')
                      ->get();
 
@@ -31,18 +32,28 @@ class UserController extends Controller
     {
         Log::info('Request data for User store:', $request->all());
 
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users', // Email harus unik
-            'password' => 'required|string|min:8', // Password minimal 8 karakter
-            'role' => 'required|string|in:admin,user,siswa', // Role harus salah satu dari ini
-        ]);
+        try { // <--- MULAI BLOK TRY
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8',
+                'role' => 'required|string|in:admin,user,siswa',
+            ]);
+            Log::info('Validation passed.'); // <--- Log ini sekarang harusnya muncul kalau validasi sukses
+        } catch (ValidationException $e) { // <--- TANGKAP VALIDATIONEXCEPTION
+            Log::warning('Validation failed for User store:', ['errors' => $e->errors()]);
+            return response()->json([
+                'message' => 'Validasi gagal.',
+                'errors' => $e->errors()
+            ], 422); // <--- PAKSA RESPONS JSON 422
+        }
+
 
         // Password akan otomatis di-hash karena ada 'password' => 'hashed' di $casts User model
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
-            'password' => $validatedData['password'], // Langsung pakai, model akan hash otomatis
+            'password' => $validatedData['password'],
             'role' => $validatedData['role'],
         ]);
 
@@ -68,28 +79,30 @@ class UserController extends Controller
 
         $user = User::findOrFail($id);
 
-        // Validasi, email harus unik kecuali untuk user itu sendiri
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'password' => 'nullable|string|min:8', // Password opsional, hanya diisi jika ingin diubah
-            'role' => 'required|string|in:admin,user,siswa',
-        ]);
-
-        // Pastikan admin tidak bisa mengubah role-nya sendiri dari form ini
-        // Jika ada admin lain yang sedang login
-        if (auth()->id() == $user->id && $validatedData['role'] !== $user->role) {
-            // Jika admin mencoba mengubah role-nya sendiri, tapi bukan satu-satunya admin
-            // Ini bisa ditangani di frontend atau validasi yang lebih kompleks
-            // Untuk sementara, kita bisa blok di backend atau tampilkan pesan error
-            if (User::where('role', 'admin')->count() > 1) { // Jika ada admin lain
-                 Log::warning('Admin tried to change own role.', ['user_id' => auth()->id(), 'attempted_role' => $validatedData['role']]);
-                 // Hapus role dari data yang divalidasi agar tidak diupdate
-                 unset($validatedData['role']);
-                 showCustomAlert("Anda tidak bisa mengubah role akun Anda sendiri.","warning"); // Ini harus difrontend
-            }
+        try { // <--- MULAI BLOK TRY
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
+                'password' => 'nullable|string|min:8',
+                'role' => 'required|string|in:admin,user,siswa',
+            ]);
+            Log::info('Validation passed for User update.'); // <--- Log ini sekarang harusnya muncul
+        } catch (ValidationException $e) { // <--- TANGKAP VALIDATIONEXCEPTION
+            Log::warning('Validation failed for User update:', ['errors' => $e->errors()]);
+            return response()->json([
+                'message' => 'Validasi gagal.',
+                'errors' => $e->errors()
+            ], 422); // <--- PAKSA RESPONS JSON 422
         }
 
+        // Pastikan admin tidak bisa mengubah role-nya sendiri dari form ini
+        // (Logic ini sekarang ada setelah validasi, jadi $validatedData sudah pasti ada)
+        if (auth()->id() == $user->id && $validatedData['role'] !== $user->role) {
+            if (User::where('role', 'admin')->count() > 1) {
+                 Log::warning('Admin tried to change own role.', ['user_id' => auth()->id(), 'attempted_role' => $validatedData['role']]);
+                 unset($validatedData['role']); // Hapus role dari data update agar tidak diupdate
+            }
+        }
 
         $dataToUpdate = [
             'name' => $validatedData['name'],
@@ -99,7 +112,7 @@ class UserController extends Controller
 
         // Jika password diisi, hash dan tambahkan ke data update
         if (!empty($validatedData['password'])) {
-            $dataToUpdate['password'] = $validatedData['password']; // Model akan hash otomatis
+            $dataToUpdate['password'] = $validatedData['password'];
         }
 
         $user->update($dataToUpdate);
