@@ -13,9 +13,9 @@
     <!-- Laravel JS Global Config -->
     <script>
       window.Laravel = {
-        loginUrl: "{{ route('login') }}",
+        csrfToken: "{{ csrf_token() }}",
         logoutUrl: "{{ route('logout') }}",
-        csrfToken: "{{ csrf_token() }}"
+        loginUrl: "{{ route('do.login') }}" // <-- PASTIIN UDAH KE 'do.login'
       };
     </script>
 

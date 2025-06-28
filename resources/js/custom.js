@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // ========== Carousel dalam Card (Berita / Ekstrakurikuler) ========== //
+    // ========== Carousel dalam Card (Berita di Halaman Public & Admin Dashboard) ========== //
     document.querySelectorAll(".group").forEach((card) => {
         const trackCard = card.querySelector(".carousel-track");
         const prevCardBtn = card.querySelector(".prev-btn");
@@ -51,11 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!trackCard || !prevCardBtn || !nextCardBtn) return;
 
-        const images = trackCard.querySelectorAll("img");
+        const slides = trackCard.querySelectorAll("div.w-full");
         let indexCard = 0;
-        const totalCardImages = images.length;
+        const totalCardSlides = slides.length;
 
-        if (totalCardImages <= 1) {
+        if (totalCardSlides <= 1) {
             prevCardBtn.style.display = 'none';
             nextCardBtn.style.display = 'none';
             return;
@@ -66,17 +66,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         setInterval(() => {
-            indexCard = (indexCard + 1) % totalCardImages;
+            indexCard = (indexCard + 1) % totalCardSlides;
             updateCardCarousel();
-        }, 4000);
+        }, 5000); // Auto-slide every 5 seconds
 
         prevCardBtn.addEventListener("click", () => {
-            indexCard = (indexCard - 1 + totalCardImages) % totalCardImages;
+            indexCard = (indexCard - 1 + totalCardSlides) % totalCardSlides;
             updateCardCarousel();
         });
 
         nextCardBtn.addEventListener("click", () => {
-            indexCard = (indexCard + 1) % totalCardImages;
+            indexCard = (indexCard + 1) % totalCardSlides;
             updateCardCarousel();
         });
     });
@@ -87,109 +87,100 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeLoginModal = document.getElementById("closeLoginModal");
 
     if (loginButton && loginModal && closeLoginModal) {
-  loginButton.addEventListener("click", () => {
-    loginModal.classList.remove("hidden");
-  });
+        loginButton.addEventListener("click", () => {
+            loginModal.classList.remove("hidden");
+        });
 
-  closeLoginModal.addEventListener("click", () => {
-    loginModal.classList.add("hidden");
-  });
+        closeLoginModal.addEventListener("click", () => {
+            loginModal.classList.add("hidden");
+        });
 
-  loginModal.addEventListener("click", (e) => {
-    if (e.target === loginModal) {
-      loginModal.classList.add("hidden");
+        loginModal.addEventListener("click", (e) => {
+            if (e.target === loginModal) {
+                loginModal.classList.add("hidden");
+            }
+        });
     }
-  });
-}
 
-  // --- JavaScript untuk Modal Keluh Kesah ---
-        const keluhKesahButton = document.getElementById("keluhKesahButton");
-        const keluhKesahModal = document.getElementById("keluhKesahModal");
-        const closeKeluhKesahModal = document.getElementById("closeKeluhKesahModal");
-        const keluhKesahForm = document.getElementById("keluhKesahForm");
+    // --- JavaScript untuk Modal Keluh Kesah ---
+    const keluhKesahButton = document.getElementById("keluhKesahButton");
+    const keluhKesahModal = document.getElementById("keluhKesahModal");
+    const closeKeluhKesahModal = document.getElementById("closeKeluhKesahModal");
+    const keluhKesahForm = document.getElementById("keluhKesahForm");
 
-        if (keluhKesahButton && keluhKesahModal && closeKeluhKesahModal && keluhKesahForm) {
-            keluhKesahButton.addEventListener("click", (e) => {
-                e.preventDefault();
-                keluhKesahModal.classList.remove("hidden");
+    if (keluhKesahButton && keluhKesahModal && closeKeluhKesahModal && keluhKesahForm) {
+        keluhKesahButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            keluhKesahModal.classList.remove("hidden");
+        });
 
-            });
+        closeKeluhKesahModal.addEventListener("click", () => {
+            keluhKesahModal.classList.add("hidden");
+        });
 
-            closeKeluhKesahModal.addEventListener("click", () => {
+        keluhKesahModal.addEventListener("click", (e) => {
+            if (e.target === keluhKesahModal) {
                 keluhKesahModal.classList.add("hidden");
+            }
+        });
 
-            });
+        keluhKesahForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("keluhKesahName").value;
+            const email = document.getElementById("keluhKesahEmail").value;
+            const message = document.getElementById("keluhKesahMessage").value;
 
-            keluhKesahModal.addEventListener("click", (e) => {
-                if (e.target === keluhKesahModal) {
-                    keluhKesahModal.classList.add("hidden");
+            fetch('/keluh-kesah', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': window.Laravel.csrfToken,
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ name, email, message })
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        keluhKesahForm.reset();
+                        showKeluhAlert("Terima kasih! Keluh kesah Anda telah kami terima.");
+                    } else {
+                        showKeluhAlert("Gagal mengirim pesan.");
+                    }
+                })
+                .catch(err => {
+                    console.error("Kesalahan saat submit:", err);
+                    showKeluhAlert("Terjadi kesalahan, coba lagi nanti.");
+                });
+        });
 
-                }
-            });
-
-keluhKesahForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const name = document.getElementById("keluhKesahName").value;
-    const email = document.getElementById("keluhKesahEmail").value;
-    const message = document.getElementById("keluhKesahMessage").value;
-
-    fetch('/keluh-kesah', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': window.Laravel.csrfToken,
-            'Accept': 'application/json'
-        },
-        body: JSON.stringify({ name, email, message })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.success) {
-        keluhKesahForm.reset();
-        showKeluhAlert("Terima kasih! Keluh kesah Anda telah kami terima.");
-        } else {
-            showKeluhAlert("Gagal mengirim pesan.");
-        }
-    })
-    .catch(err => {
-        console.error("Kesalahan saat submit:", err);
-        showKeluhAlert("Terjadi kesalahan, coba lagi nanti.");
-    });
-});
-
-        } else {
-            console.warn("Elemen modal keluh kesah atau tombol terkait tidak ditemukan.");
-        }
+    } else {
+        console.warn("Elemen modal keluh kesah atau tombol terkait tidak ditemukan.");
+    }
 
     // === NOTIF KELUH KESAH ===
-function showKeluhAlert(message) {
-  const alertBox = document.getElementById("keluhAlert");
-  const alertText = document.getElementById("keluhAlertText");
-  const keluhKesahModal = document.getElementById("keluhKesahModal");
+    function showKeluhAlert(message) {
+        const alertBox = document.getElementById("keluhAlert");
+        const alertText = document.getElementById("keluhAlertText");
+        const keluhKesahModal = document.getElementById("keluhKesahModal");
 
-  if (alertBox && alertText) {
-    alertText.textContent = message;
+        if (alertBox && alertText) {
+            alertText.textContent = message;
 
-    // ✅ Tutup modal: hilangkan "show", tambahkan "hidden"
-    if (keluhKesahModal) {
-      keluhKesahModal.classList.remove("show");
-      keluhKesahModal.classList.add("hidden");
+            if (keluhKesahModal) {
+                keluhKesahModal.classList.remove("show");
+                keluhKesahModal.classList.add("hidden");
+            }
+
+            alertBox.classList.remove("hidden");
+            alertBox.classList.add("opacity-100");
+
+            setTimeout(() => {
+                alertBox.classList.remove("opacity-100");
+                alertBox.classList.add("hidden");
+            }, 2500);
+        }
     }
-
-    // ✅ Tampilkan alert-nya
-    alertBox.classList.remove("hidden");
-    alertBox.classList.add("opacity-100");
-
-    // ✅ Sembunyikan alert setelah 2.5 detik
-    setTimeout(() => {
-      alertBox.classList.remove("opacity-100");
-      alertBox.classList.add("hidden");
-    }, 2500);
-  }
-}
-
-
-
 
     // ========== AJAX Login ========== //
     const loginForm = document.getElementById("loginForm");
@@ -201,539 +192,860 @@ function showKeluhAlert(message) {
             fetch(window.Laravel.loginUrl, {
                 method: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': window.Laravel.csrfToken
+                    'X-CSRF-TOKEN': window.Laravel.csrfToken,
+                    'Accept': 'application/json'
                 },
                 body: formData
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                } else {
-                    showCustomAlert(data.error || "Login gagal"); // Mengganti alert()
-                }
-            })
-            .catch((error) => {
-                console.error("Terjadi kesalahan saat login:", error);
-                showCustomAlert("Terjadi kesalahan saat login."); // Mengganti alert()
-            });
+                .then(res => {
+                    const contentType = res.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return res.json();
+                    } else {
+                        return res.text().then(text => {
+                            console.error("Respons dari server saat login bukan JSON. Ini isinya:", text);
+                            throw new Error("Respons server tidak valid. Silakan cek kredensial Anda.");
+                        });
+                    }
+                })
+                .then(data => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                    } else {
+                        showCustomAlert(data.message || data.error || "Login gagal! Periksa username dan password Anda.");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Terjadi kesalahan saat login:", error);
+                    showCustomAlert("Terjadi kesalahan saat login: " + error.message);
+                });
         });
     }
 
     // ========== Event listener untuk tombol logout ========== //
     const logoutLink = document.getElementById('logoutLink');
     if (logoutLink) {
-        logoutLink.addEventListener('click', function(event) {
-            event.preventDefault(); // Mencegah perilaku default dari tag <a>
+        logoutLink.addEventListener('click', function (event) {
+            event.preventDefault();
             confirmLogout();
         });
     }
-});
 
-document.addEventListener('DOMContentLoaded', function () {
-  window.toggleDropdown = function (id) {
-    const dropdown = document.getElementById(id);
-    if (dropdown) {
-      dropdown.classList.toggle('hidden');
-    }
-  };
+    // Global Functions (karena dipanggil dari HTML atau perlu diakses dari mana saja)
+    window.toggleDropdown = function (id) {
+        const dropdown = document.getElementById(id);
+        if (dropdown) {
+            dropdown.classList.toggle('hidden');
+        }
+    };
 
-  // Close dropdown on outside click
-  window.addEventListener('click', function (e) {
-    const dropdown = document.getElementById('profileDropdown');
-    const button = dropdown?.previousElementSibling;
+    window.showCustomAlert = function (message) {
+        const alertModal = document.getElementById('customAlertModal');
+        const alertMessage = document.getElementById('alertMessage');
+        const closeAlertModal = document.getElementById('closeAlertModal');
 
-    if (dropdown && button && !dropdown.contains(e.target) && !button.contains(e.target)) {
-      dropdown.classList.add('hidden');
-    }
-  });
-});
+        if (alertModal && alertMessage && closeAlertModal) {
+            alertMessage.textContent = message;
+            alertModal.classList.remove('hidden');
 
-// Custom Alert Modal
-function showCustomAlert(message) {
-    const alertModal = document.getElementById('customAlertModal');
-    const alertMessage = document.getElementById('alertMessage');
-    const closeAlertModal = document.getElementById('closeAlertModal');
-
-    if (alertModal && alertMessage && closeAlertModal) {
-        alertMessage.textContent = message;
-        alertModal.classList.remove('hidden');
-
-        closeAlertModal.onclick = () => {
-            alertModal.classList.add('hidden');
-        };
-
-        alertModal.onclick = (e) => {
-            if (e.target === alertModal) {
+            closeAlertModal.onclick = () => {
                 alertModal.classList.add('hidden');
-            }
-        };
+            };
+
+            alertModal.onclick = (e) => {
+                if (e.target === alertModal) {
+                    alertModal.classList.add('hidden');
+                }
+            };
+        }
     }
-}
 
-// Custom Confirmation Modal
-let confirmCallback = null;
-function showConfirmModal(message, callback) {
-    const confirmModal = document.getElementById('customConfirmModal');
-    const confirmMessage = document.getElementById('confirmMessage');
-    const confirmYes = document.getElementById('confirmYes');
-    const confirmNo = document.getElementById('confirmNo');
+    let confirmCallback = null;
+    window.showConfirmModal = function (message, callback) {
+        const confirmModal = document.getElementById('customConfirmModal');
+        const confirmMessage = document.getElementById('confirmMessage');
+        const confirmYes = document.getElementById('confirmYes');
+        const confirmNo = document.getElementById('confirmNo');
 
-    if (confirmModal && confirmMessage && confirmYes && confirmNo) {
-        confirmMessage.textContent = message;
-        confirmCallback = callback;
-        confirmModal.classList.remove('hidden');
+        if (confirmModal && confirmMessage && confirmYes && confirmNo) {
+            confirmMessage.textContent = message;
+            confirmCallback = callback;
+            confirmModal.classList.remove('hidden');
 
-        confirmYes.onclick = () => {
-            confirmModal.classList.add('hidden');
-            if (confirmCallback) {
-                confirmCallback(true);
-            }
-        };
-
-        confirmNo.onclick = () => {
-            confirmModal.classList.add('hidden');
-            if (confirmCallback) {
-                confirmCallback(false);
-            }
-        };
-
-        confirmModal.onclick = (e) => {
-            if (e.target === confirmModal) {
+            confirmYes.onclick = () => {
                 confirmModal.classList.add('hidden');
                 if (confirmCallback) {
-                  confirmCallback(false);
+                    confirmCallback(true);
                 }
-            }
-        };
-    }
-}
+            };
 
-// ========== Function Logout (di luar DOMContentLoaded biar global) ========== //
-function confirmLogout() {
-    console.log("Fungsi confirmLogout dipanggil."); // Debugging
-    console.log("window.Laravel:", window.Laravel); // Debugging
-
-    // Pastikan window.Laravel dan propertinya terdefinisi
-    if (typeof window.Laravel === 'undefined' || !window.Laravel.logoutUrl || !window.Laravel.csrfToken) {
-        console.error("Kesalahan: Variabel Laravel.logoutUrl atau Laravel.csrfToken tidak terdefinisi.");
-        showCustomAlert("Terjadi kesalahan saat logout. Data aplikasi tidak lengkap.");
-        return; // Hentikan eksekusi jika variabel tidak lengkap
-    }
-
-    showConfirmModal("Apakah Anda yakin ingin keluar?", function(result) {
-        if (result) {
-            fetch(window.Laravel.logoutUrl, {
-                method: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': window.Laravel.csrfToken,
-                    'Content-Type': 'application/json', // Tambahkan header Content-Type
-                    'Accept': 'application/json' // Tambahkan header Accept
+            confirmNo.onclick = () => {
+                confirmModal.classList.add('hidden');
+                if (confirmCallback) {
+                    confirmCallback(false);
                 }
-            })
-            .then(response => {
-                // Jika responsnya OK (status 2xx), langsung reload halaman.
-                // Ini akan memungkinkan Laravel untuk mengarahkan pengguna ke halaman yang sesuai
-                // (misalnya halaman login) secara otomatis setelah logout.
-                if (response.ok) {
-                    window.location.reload(true); // Force a full page reload from the server
-                    return; // Hentikan eksekusi lebih lanjut
-                } else {
-                    // Jika respons tidak OK, coba ambil pesan error.
-                    // Cek dulu apakah Content-Type-nya JSON, kalau tidak, anggap teks biasa.
-                    const contentType = response.headers.get("content-type");
-                    if (contentType && contentType.indexOf("application/json") !== -1) {
-                        return response.json().then(errorData => {
-                            throw new Error(errorData.message || "Gagal logout dari server dengan respons JSON.");
-                        });
-                    } else {
-                        return response.text().then(errorText => {
-                            // Tampilkan hanya bagian awal teks untuk menghindari log terlalu panjang
-                            const truncatedText = errorText.substring(0, 200);
-                            throw new Error(`Gagal logout dari server: ${response.status} ${response.statusText}. Respon: ${truncatedText}...`);
-                        });
+            };
+
+            confirmModal.onclick = (e) => {
+                if (e.target === confirmModal) {
+                    confirmModal.classList.add('hidden');
+                    if (confirmCallback) {
+                        confirmCallback(false);
                     }
                 }
-            })
-            .catch(error => {
-                console.error("Terjadi kesalahan saat logout:", error);
-                showCustomAlert("Gagal logout. Coba lagi: " + error.message);
-            });
+            };
         }
-    });
-}
+    }
 
-const sidebarLinks = document.querySelectorAll(".sidebar-link");
-        const adminContentSections = document.querySelectorAll(
-          ".admin-content-section"
-        );
-        const logoutButton = document.getElementById("logoutButton");
+    window.confirmLogout = function () {
+        console.log("Fungsi confirmLogout dipanggil.");
+        if (typeof window.Laravel === 'undefined' || !window.Laravel.logoutUrl || !window.Laravel.csrfToken) {
+            console.error("Kesalahan: Variabel Laravel.logoutUrl atau Laravel.csrfToken tidak terdefinisi.");
+            showCustomAlert("Terjadi kesalahan saat logout. Data aplikasi tidak lengkap.");
+            return;
+        }
 
-        // Data dummy untuk simulasi CRUD (akan diganti dengan data dari backend)
-        let beritaData = [
-          {
-            id: 1,
-            title: "Siswa Meraih Juara Lomba Sains",
-            date: "2024-06-10",
-            content:
-              "Selamat kepada Ananda Budi Santoso yang berhasil meraih juara 1 dalam Lomba Sains tingkat kota Semarang. Prestasi ini menunjukkan dedikasi dan kerja keras siswa kami.",
-            imageUrl: "https://placehold.co/400x250/FFD700/000000?text=Berita+1",
-          },
-          {
-            id: 2,
-            title: "Workshop Literasi Digital untuk Guru",
-            date: "2024-06-05",
-            content:
-              "SMPN 44 Semarang menyelenggarakan workshop literasi digital untuk meningkatkan kompetensi guru dan karyawan dalam penggunaan teknologi di era modern.",
-            imageUrl: "https://placehold.co/400x250/C0C0C0/000000?text=Berita+2",
-          },
-        ];
+        showConfirmModal("Apakah Anda yakin ingin keluar?", function (result) {
+            if (result) {
+                fetch(window.Laravel.logoutUrl, {
+                    method: "POST",
+                    headers: {
+                        'X-CSRF-TOKEN': window.Laravel.csrfToken,
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            window.location.reload(true);
+                            return;
+                        } else {
+                            const contentType = response.headers.get("content-type");
+                            if (contentType && contentType.indexOf("application/json") !== -1) {
+                                return response.json().then(errorData => {
+                                    throw new Error(errorData.message || "Gagal logout dari server dengan respons JSON.");
+                                });
+                            } else {
+                                return response.text().then(errorText => {
+                                    const truncatedText = errorText.substring(0, 200);
+                                    throw new Error(`Gagal logout dari server: ${response.status} ${response.statusText}. Respon: ${truncatedText}...`);
+                                });
+                            }
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Terjadi kesalahan saat logout:", error);
+                        showCustomAlert("Gagal logout. Coba lagi: " + error.message);
+                    });
+            }
+        });
+    }
 
-        let prestasiData = [
-          {
-            id: 1,
-            title: "Juara 1 Olimpiade Matematika Tingkat Provinsi",
-            achiever: "Siti Aisyah (Kelas IX A)",
-            date: "Mei 2024",
-            description:
-              "Siti Aisyah berhasil mengharumkan nama sekolah dengan meraih juara pertama dalam ajang Olimpiade Matematika tingkat provinsi. Selamat!",
-            imageUrl:
-              "https://placehold.co/400x250/87CEEB/000000?text=Juara+Olimpiade+Matematika",
-          },
-          {
-            id: 2,
-            title: "Juara 2 Lomba Baca Puisi Tingkat Kota",
-            achiever: "Rio Pratama (Kelas VIII C)",
-            date: "April 2024",
-            description:
-              "Rio Pratama menunjukkan bakatnya dalam seni dengan meraih juara kedua lomba baca puisi tingkat kota Semarang.",
-            imageUrl:
-              "https://placehold.co/400x250/FFDAB9/000000?text=Juara+Lomba+Puisi",
-          },
-        ];
+    // --- LOGIC UNTUK DASHBOARD ADMIN (Di sini fokus CRUD) ---
 
-        let ekskulData = [
-          {
-            id: 1,
-            name: "Pramuka",
-            description:
-              "Membentuk karakter disiplin, kemandirian, dan kepemimpinan melalui kegiatan outdoor dan sosial.",
-            imageUrl: "https://placehold.co/400x250/90EE90/000000?text=Pramuka",
-          },
-          {
-            id: 2,
-            name: "PMR (Palang Merah Remaja)",
-            description:
-              "Melatih siswa dalam pertolongan pertama, kesehatan, dan kegiatan sosial kemanusiaan.",
-            imageUrl: "https://placehold.co/400x250/FFB6C1/000000?text=PMR",
-          },
-        ];
+    // Deklarasi variabel untuk elemen-elemen DOM di awal scope agar bisa diakses di mana saja
+    const sidebarLinks = document.querySelectorAll(".sidebar-link");
+    const adminContentSections = document.querySelectorAll(".admin-content-section");
+    const logoutButton = document.getElementById("logoutButton");
 
-        // Fungsi untuk menampilkan section admin yang aktif
-        function showAdminSection(targetId) {
-          adminContentSections.forEach((section) => {
+    // Variabel untuk elemen-elemen form dan tabel berita
+    const beritaListBody = document.getElementById("beritaList");
+    const beritaForm = document.getElementById("beritaForm");
+    const beritaIdInput = document.getElementById("beritaId");
+    const beritaTitleInput = document.getElementById("beritaTitle");
+    const beritaDateInput = document.getElementById("beritaDate");
+    const beritaContentInput = document.getElementById("beritaContent");
+    const beritaImageFilesInput = document.getElementById("beritaImageFiles");
+    const beritaImagePreviewDiv = document.getElementById("beritaImagePreview");
+    const simpanBeritaBtn = beritaForm ? beritaForm.querySelector('button[type="submit"]') : null;
+    const cancelEditBeritaBtn = document.getElementById("cancelEditBerita");
+
+    // Variabel untuk elemen-elemen form dan tabel prestasi
+    const prestasiListBody = document.getElementById("prestasiList");
+    const prestasiForm = document.getElementById("prestasiForm");
+    const prestasiIdInput = document.getElementById("prestasiId");
+    const prestasiTitleInput = document.getElementById("prestasiTitle");
+    const prestasiAchieverInput = document.getElementById("prestasiAchiever");
+    const prestasiPeriodeInput = document.getElementById("prestasiPeriode");
+    const prestasiTahunInput = document.getElementById("prestasiTahun");
+    const prestasiDescriptionInput = document.getElementById("prestasiDescription");
+    const prestasiImageFilesInput = document.getElementById("prestasiImageFiles");
+    const prestasiImagePreviewDiv = document.getElementById("prestasiImagePreview");
+    const simpanPrestasiBtn = prestasiForm ? prestasiForm.querySelector('button[type="submit"]') : null;
+    const cancelEditPrestasiBtn = document.getElementById("cancelEditPrestasi");
+
+
+    // Fungsi untuk menampilkan section admin yang aktif
+    function showAdminSection(targetId) {
+        adminContentSections.forEach((section) => {
             section.classList.remove("active");
-            section.classList.add("hidden"); // Tambahkan hidden untuk transisi opacity
-          });
-          document.getElementById(targetId).classList.add("active");
-          document.getElementById(targetId).classList.remove("hidden");
+            section.classList.add("hidden");
+        });
+        document.getElementById(targetId).classList.add("active");
+        document.getElementById(targetId).classList.remove("hidden");
 
-          // Update active class di sidebar
-          sidebarLinks.forEach((link) => {
+        sidebarLinks.forEach((link) => {
             link.classList.remove("active-admin-tab");
-          });
-          document
+        });
+        document
             .querySelector(`.sidebar-link[data-target="${targetId}"]`)
             .classList.add("active-admin-tab");
-        }
 
-        // Event listener untuk sidebar navigasi
-        sidebarLinks.forEach((link) => {
-          link.addEventListener("click", (e) => {
+        // Panggil load data sesuai tab yang aktif
+        if (targetId === 'manage-berita') {
+            loadBeritas();
+        } else if (targetId === 'manage-prestasi') {
+            loadPrestasis(); // Panggil fungsi untuk memuat prestasi
+        }
+        // Nanti untuk ekstrakurikuler juga di sini
+        // else if (targetId === 'manage-ekstrakurikuler') { loadEkskul(); }
+    }
+
+    // Event listener untuk sidebar navigasi
+    sidebarLinks.forEach((link) => {
+        link.addEventListener("click", (e) => {
             e.preventDefault();
             const targetId = link.getAttribute("data-target");
             showAdminSection(targetId);
-          });
         });
+    });
 
-        // Fungsi Logout
-        logoutButton.addEventListener("click", () => {
-          // Simulasi logout: arahkan kembali ke halaman utama
-          // Di sini nanti ada logic untuk menghapus token otentikasi
-          window.location.href = "pages.beranda";
-        });
+    // Panggil showAdminSection untuk tab default saat halaman dimuat
+    showAdminSection('manage-berita');
 
-        // --- CRUD Berita Functions ---
-        const beritaForm = document.getElementById("beritaForm");
-        const beritaList = document.getElementById("beritaList");
-        const beritaIdInput = document.getElementById("beritaId");
-        const beritaTitleInput = document.getElementById("beritaTitle");
-        const beritaDateInput = document.getElementById("beritaDate");
-        const beritaContentInput = document.getElementById("beritaContent");
-        const beritaImageUrlInput = document.getElementById("beritaImageUrl");
-        const cancelEditBeritaButton = document.getElementById("cancelEditBerita");
+    // ========== CRUD Berita (Manajemen Berita) LOGIC ========= //
 
-        function renderBerita() {
-          beritaList.innerHTML = ""; // Kosongkan tabel
-          beritaData.forEach((berita) => {
-            const row = beritaList.insertRow();
-            row.innerHTML = `
-              <td class="py-3 px-6 whitespace-nowrap">${berita.title}</td>
-              <td class="py-3 px-6 whitespace-nowrap">${berita.date}</td>
-              <td class="py-3 px-6 whitespace-nowrap">
-                <button data-id="${berita.id}" class="edit-berita-btn bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-full text-xs mr-2 transition-colors duration-200">
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button data-id="${berita.id}" class="delete-berita-btn bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full text-xs transition-colors duration-200">
-                  <i class="fas fa-trash"></i> Hapus
-                </button>
-              </td>
-            `;
-          });
-          addBeritaEventListeners();
+    // Fungsi untuk memuat dan menampilkan berita dari API
+    async function loadBeritas() {
+        if (!beritaListBody) {
+            console.error("Elemen #beritaList tidak ditemukan di HTML admin dashboard.");
+            return;
         }
 
-        function addBeritaEventListeners() {
-          document.querySelectorAll(".edit-berita-btn").forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const id = parseInt(e.target.dataset.id);
-              const berita = beritaData.find((b) => b.id === id);
-              if (berita) {
-                beritaIdInput.value = berita.id;
-                beritaTitleInput.value = berita.title;
-                beritaDateInput.value = berita.date;
-                beritaContentInput.value = berita.content;
-                beritaImageUrlInput.value = berita.imageUrl || "";
-                cancelEditBeritaButton.style.display = "inline-block";
-              }
-            });
-          });
+        beritaListBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Memuat data berita...</td></tr>';
 
-          document.querySelectorAll(".delete-berita-btn").forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const id = parseInt(e.target.dataset.id);
-              // Konfirmasi sebelum menghapus
-              if (confirm("Yakin ingin menghapus berita ini?")) {
-                beritaData = beritaData.filter((b) => b.id !== id);
-                renderBerita();
-              }
+        try {
+            const response = await fetch('/api/beritas', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
             });
-          });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                throw new Error(errorData.message || 'Gagal memuat berita dari server.');
+            }
+
+            const beritas = await response.json();
+
+            beritaListBody.innerHTML = '';
+
+            if (beritas.length === 0) {
+                beritaListBody.innerHTML = '<tr><td colspan="3" class="text-center py-4">Belum ada data berita.</td></tr>';
+            } else {
+                beritas.forEach(berita => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">${berita.judul}</td>
+                            <td class="py-3 px-6 text-left">${berita.tanggal}</td>
+                            <td class="py-3 px-6 text-left">
+                                <div class="flex item-center justify-start">
+                                    <button
+                                        class="edit-berita-btn w-4 mr-2 transform hover:text-purple-500 hover:scale-110"
+                                        data-id="${berita.id}" title="Edit"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                        class="delete-berita-btn w-4 mr-2 transform hover:text-red-500 hover:scale-110"
+                                        data-id="${berita.id}" title="Hapus"
+                                    >
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    beritaListBody.insertAdjacentHTML('beforeend', row);
+                });
+
+                // Pasang event listener untuk tombol edit dan delete setelah HTML di-render
+                beritaListBody.querySelectorAll('.edit-berita-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        editBerita(id);
+                    });
+                });
+
+                beritaListBody.querySelectorAll('.delete-berita-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        deleteBerita(id);
+                    });
+                });
+            }
+
+        } catch (error) {
+            console.error("Error saat memuat berita:", error);
+            beritaListBody.innerHTML = `<tr><td colspan="3" class="text-center py-4 text-red-500">Error: ${error.message}</td></tr>`;
+            showCustomAlert("Gagal memuat daftar berita: " + error.message);
+        }
+    }
+
+    // Fungsi untuk mereset form berita
+    function resetBeritaForm() {
+        if (!beritaForm) return;
+
+        beritaForm.reset();
+        beritaIdInput.value = '';
+        if (beritaImagePreviewDiv) {
+            beritaImagePreviewDiv.innerHTML = '';
+        }
+        if (simpanBeritaBtn) {
+            simpanBeritaBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Simpan Berita';
+            simpanBeritaBtn.disabled = false;
+        }
+        if (cancelEditBeritaBtn) {
+            cancelEditBeritaBtn.style.display = 'none';
+        }
+        if (beritaImageFilesInput) {
+            beritaImageFilesInput.value = '';
+        }
+    }
+
+    // Fungsi untuk mengisi form dengan data berita yang akan diedit
+    async function editBerita(id) {
+        try {
+            const response = await fetch(`/api/beritas/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                throw new Error(errorData.message || 'Gagal mengambil data berita untuk diedit.');
+            }
+
+            const berita = await response.json();
+
+            // Isi form dengan data berita
+            beritaIdInput.value = berita.id;
+            beritaTitleInput.value = berita.judul;
+
+            // Pastikan tanggal diformat ke `YYYY-MM-DD` untuk input type="date"
+            if (berita.tanggal) {
+                const dateObj = new Date(berita.tanggal);
+                const year = dateObj.getFullYear();
+                const month = (dateObj.getMonth() + 1).toString().padStart(2, '0');
+                const day = dateObj.getDate().toString().padStart(2, '0');
+                beritaDateInput.value = `${year}-${month}-${day}`;
+            } else {
+                beritaDateInput.value = '';
+            }
+
+            beritaContentInput.value = berita.konten;
+
+            // Tampilkan gambar yang sudah ada
+            if (beritaImagePreviewDiv) {
+                beritaImagePreviewDiv.innerHTML = '';
+                if (berita.gambar && Array.isArray(berita.gambar) && berita.gambar.length > 0) {
+                    berita.gambar.forEach(imgUrl => {
+                        const imgWrapper = document.createElement('div');
+                        imgWrapper.classList.add('relative');
+
+                        const img = document.createElement('img');
+                        img.src = `/${imgUrl}`;
+                        img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
+                        imgWrapper.appendChild(img);
+
+                        const deleteImgBtn = document.createElement('button');
+                        deleteImgBtn.classList.add(
+                            'absolute', 'top-1', 'right-1', 'bg-red-500', 'text-white', 'rounded-full',
+                            'w-6', 'h-6', 'flex', 'items-center', 'justify-center', 'text-xs', 'opacity-80',
+                            'hover:opacity-100', 'transition-opacity'
+                        );
+                        deleteImgBtn.innerHTML = '<i class="fas fa-times"></i>';
+                        deleteImgBtn.dataset.imagePath = imgUrl;
+                        deleteImgBtn.addEventListener('click', function() {
+                            if (confirm('Yakin ingin menghapus gambar ini dari berita? (Perubahan akan disimpan saat berita diupdate)')) {
+                                imgWrapper.remove();
+                            }
+                        });
+                        imgWrapper.appendChild(deleteImgBtn);
+                        beritaImagePreviewDiv.appendChild(imgWrapper);
+                    });
+                }
+            }
+
+            // Ubah teks tombol dan tampilkan tombol batal
+            if (simpanBeritaBtn) {
+                simpanBeritaBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Update Berita';
+            }
+            if (cancelEditBeritaBtn) {
+                cancelEditBeritaBtn.style.display = 'inline-block';
+            }
+
+            showCustomAlert('Mode edit aktif untuk berita: ' + berita.judul);
+
+        } catch (error) {
+            console.error("Error saat mengambil data berita untuk edit:", error);
+            showCustomAlert("Gagal memuat data edit: " + error.message);
+        }
+    }
+
+    // Fungsi untuk menghapus berita
+    async function deleteBerita(id) {
+        showConfirmModal("Apakah Anda yakin ingin menghapus berita ini?", async function(result) {
+            if (result) {
+                try {
+                    const url = `/api/beritas/${id}`;
+                    const method = 'DELETE';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'X-CSRF-TOKEN': window.Laravel.csrfToken,
+                            'Accept': 'application/json'
+                        },
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                        throw new Error(errorData.message || 'Gagal menghapus berita dari server.');
+                    }
+
+                    showCustomAlert('Berita berhasil dihapus!');
+                    loadBeritas();
+                    resetBeritaForm();
+                } catch (error) {
+                    console.error("Error saat menghapus berita:", error);
+                    showCustomAlert("Gagal menghapus berita: " + error.message);
+                }
+            } else {
+                showCustomAlert('Penghapusan berita dibatalkan.');
+            }
+        });
+    }
+
+    // Event Listener untuk preview gambar
+    if (beritaImageFilesInput) {
+        beritaImageFilesInput.addEventListener('change', function() {
+            if (beritaImagePreviewDiv) {
+                beritaImagePreviewDiv.innerHTML = '';
+            }
+            if (this.files && this.files.length > 0) {
+                for (const file of this.files) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
+                        if (beritaImagePreviewDiv) {
+                            beritaImagePreviewDiv.appendChild(img);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        });
+    }
+
+    // Event Listener untuk submit form berita (CREATE & UPDATE)
+    if (beritaForm) {
+        beritaForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const beritaId = beritaIdInput.value;
+            const url = beritaId ? `/api/beritas/${beritaId}` : '/api/beritas';
+            const method = 'POST';
+
+            const formData = new FormData();
+            formData.append('judul', beritaTitleInput.value);
+            formData.append('tanggal', beritaDateInput.value);
+            formData.append('konten', beritaContentInput.value);
+
+            if (beritaImageFilesInput && beritaImageFilesInput.files.length > 0) {
+                for (const file of beritaImageFilesInput.files) {
+                    formData.append('gambar_baru[]', file);
+                }
+            }
+
+            if (beritaId && beritaImagePreviewDiv) {
+                const existingImages = beritaImagePreviewDiv.querySelectorAll('img');
+                existingImages.forEach(img => {
+                    if (img.src.includes('/assets/berita_images/')) {
+                        const pathSegments = img.src.split('/assets/berita_images/');
+                        if (pathSegments.length > 1) {
+                            formData.append('gambar_lama[]', 'assets/berita_images/' + pathSegments[1]);
+                        }
+                    }
+                });
+            }
+
+            if (beritaId) {
+                formData.append('_method', 'PATCH');
+            }
+
+            formData.append('_token', window.Laravel.csrfToken);
+
+            if (simpanBeritaBtn) {
+                simpanBeritaBtn.disabled = true;
+                simpanBeritaBtn.innerHTML = beritaId ? 'Mengupdate...' : 'Menyimpan...';
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    let errorMessage = data.message || 'Terjadi kesalahan saat menyimpan berita.';
+                    if (data.errors) {
+                        errorMessage += "\n" + Object.values(data.errors).map(e => e.join(', ')).join('\n');
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                showCustomAlert(data.message || (beritaId ? 'Berita berhasil diupdate!' : 'Berita berhasil disimpan!'));
+                resetBeritaForm();
+                loadBeritas();
+
+            } catch (error) {
+                console.error("Error saat menyimpan/mengupdate berita:", error);
+                showCustomAlert("Gagal menyimpan/mengupdate berita: " + error.message);
+            } finally {
+                if (simpanBeritaBtn) {
+                    simpanBeritaBtn.disabled = false;
+                    simpanBeritaBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Simpan Berita';
+                }
+            }
+        });
+    }
+
+    // Event listener untuk tombol Batal Edit
+    if (cancelEditBeritaBtn) {
+        cancelEditBeritaBtn.addEventListener('click', () => {
+            resetBeritaForm();
+            showCustomAlert('Mode edit dibatalkan.');
+        });
+    }
+
+    // ========== CRUD Prestasi (Manajemen Prestasi) LOGIC ========= //
+
+    // Fungsi untuk memuat dan menampilkan prestasi dari API
+    async function loadPrestasis() {
+        if (!prestasiListBody) {
+            console.error("Elemen #prestasiList tidak ditemukan di HTML admin dashboard.");
+            return;
         }
 
-        beritaForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const id = beritaIdInput.value;
-          const newBerita = {
-            title: beritaTitleInput.value,
-            date: beritaDateInput.value,
-            content: beritaContentInput.value,
-            imageUrl: beritaImageUrlInput.value,
-          };
+        prestasiListBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Memuat data prestasi...</td></tr>'; // colspan 4 karena ada 4 kolom
 
-          if (id) {
-            // Update berita yang ada
-            beritaData = beritaData.map((berita) =>
-              berita.id === parseInt(id) ? { ...berita, ...newBerita } : berita
-            );
-            beritaIdInput.value = ""; // Reset ID
-            cancelEditBeritaButton.style.display = "none";
-          } else {
-            // Tambah berita baru
-            newBerita.id = beritaData.length > 0 ? Math.max(...beritaData.map(b => b.id)) + 1 : 1;
-            beritaData.push(newBerita);
-          }
-          beritaForm.reset();
-          renderBerita();
-        });
-
-        cancelEditBeritaButton.addEventListener("click", () => {
-          beritaForm.reset();
-          beritaIdInput.value = "";
-          cancelEditBeritaButton.style.display = "none";
-        });
-
-        // --- CRUD Prestasi Functions ---
-        const prestasiForm = document.getElementById("prestasiForm");
-        const prestasiList = document.getElementById("prestasiList");
-        const prestasiIdInput = document.getElementById("prestasiId");
-        const prestasiTitleInput = document.getElementById("prestasiTitle");
-        const prestasiAchieverInput = document.getElementById("prestasiAchiever");
-        const prestasiDateInput = document.getElementById("prestasiDate");
-        const prestasiDescriptionInput = document.getElementById("prestasiDescription");
-        const prestasiImageUrlInput = document.getElementById("prestasiImageUrl");
-        const cancelEditPrestasiButton = document.getElementById("cancelEditPrestasi");
-
-        function renderPrestasi() {
-          prestasiList.innerHTML = "";
-          prestasiData.forEach((prestasi) => {
-            const row = prestasiList.insertRow();
-            row.innerHTML = `
-              <td class="py-3 px-6 whitespace-nowrap">${prestasi.title}</td>
-              <td class="py-3 px-6 whitespace-nowrap">${prestasi.achiever}</td>
-              <td class="py-3 px-6 whitespace-nowrap">
-                <button data-id="${prestasi.id}" class="edit-prestasi-btn bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-full text-xs mr-2 transition-colors duration-200">
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button data-id="${prestasi.id}" class="delete-prestasi-btn bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full text-xs transition-colors duration-200">
-                  <i class="fas fa-trash"></i> Hapus
-                </button>
-              </td>
-            `;
-          });
-          addPrestasiEventListeners();
-        }
-
-        function addPrestasiEventListeners() {
-          document.querySelectorAll(".edit-prestasi-btn").forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const id = parseInt(e.target.dataset.id);
-              const prestasi = prestasiData.find((p) => p.id === id);
-              if (prestasi) {
-                prestasiIdInput.value = prestasi.id;
-                prestasiTitleInput.value = prestasi.title;
-                prestasiAchieverInput.value = prestasi.achiever;
-                prestasiDateInput.value = prestasi.date;
-                prestasiDescriptionInput.value = prestasi.description;
-                prestasiImageUrlInput.value = prestasi.imageUrl || "";
-                cancelEditPrestasiButton.style.display = "inline-block";
-              }
+        try {
+            const response = await fetch('/api/prestasis', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
             });
-          });
 
-          document.querySelectorAll(".delete-prestasi-btn").forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const id = parseInt(e.target.dataset.id);
-              if (confirm("Yakin ingin menghapus prestasi ini?")) {
-                prestasiData = prestasiData.filter((p) => p.id !== id);
-                renderPrestasi();
-              }
-            });
-          });
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                throw new Error(errorData.message || 'Gagal memuat prestasi dari server.');
+            }
+
+            const prestasis = await response.json();
+
+            prestasiListBody.innerHTML = '';
+
+            if (prestasis.length === 0) {
+                prestasiListBody.innerHTML = '<tr><td colspan="4" class="text-center py-4">Belum ada data prestasi.</td></tr>';
+            } else {
+                prestasis.forEach(prestasi => {
+                    const row = `
+                        <tr class="border-b border-gray-200 hover:bg-gray-50">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">${prestasi.judul}</td>
+                            <td class="py-3 px-6 text-left">${prestasi.pencapai}</td>
+                            <td class="py-3 px-6 text-left">${prestasi.periode}</td>
+                            <td class="py-3 px-6 text-left">
+                                <div class="flex item-center justify-start">
+                                    <button
+                                        class="edit-prestasi-btn w-4 mr-2 transform hover:text-purple-500 hover:scale-110"
+                                        data-id="${prestasi.id}" title="Edit"
+                                    >
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                        class="delete-prestasi-btn w-4 mr-2 transform hover:text-red-500 hover:scale-110"
+                                        data-id="${prestasi.id}" title="Hapus"
+                                    >
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    prestasiListBody.insertAdjacentHTML('beforeend', row);
+                });
+
+                // Pasang event listener untuk tombol edit dan delete setelah HTML di-render
+                prestasiListBody.querySelectorAll('.edit-prestasi-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        editPrestasi(id);
+                    });
+                });
+
+                prestasiListBody.querySelectorAll('.delete-prestasi-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        deletePrestasi(id);
+                    });
+                });
+            }
+
+        } catch (error) {
+            console.error("Error saat memuat prestasi:", error);
+            prestasiListBody.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-red-500">Error: ${error.message}</td></tr>`;
+            showCustomAlert("Gagal memuat daftar prestasi: " + error.message);
         }
+    }
 
-        prestasiForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const id = prestasiIdInput.value;
-          const newPrestasi = {
-            title: prestasiTitleInput.value,
-            achiever: prestasiAchieverInput.value,
-            date: prestasiDateInput.value,
-            description: prestasiDescriptionInput.value,
-            imageUrl: prestasiImageUrlInput.value,
-          };
+    // Fungsi untuk mereset form prestasi
+    function resetPrestasiForm() {
+        if (!prestasiForm) return;
 
-          if (id) {
-            prestasiData = prestasiData.map((prestasi) =>
-              prestasi.id === parseInt(id)
-                ? { ...prestasi, ...newPrestasi }
-                : prestasi
-            );
-            prestasiIdInput.value = "";
-            cancelEditPrestasiButton.style.display = "none";
-          } else {
-            newPrestasi.id = prestasiData.length > 0 ? Math.max(...prestasiData.map(p => p.id)) + 1 : 1;
-            prestasiData.push(newPrestasi);
-          }
-          prestasiForm.reset();
-          renderPrestasi();
-        });
-
-        cancelEditPrestasiButton.addEventListener("click", () => {
-          prestasiForm.reset();
-          prestasiIdInput.value = "";
-          cancelEditPrestasiButton.style.display = "none";
-        });
-
-        // --- CRUD Ekstrakurikuler Functions ---
-        const ekskulForm = document.getElementById("ekskulForm");
-        const ekskulList = document.getElementById("ekskulList");
-        const ekskulIdInput = document.getElementById("ekskulId");
-        const ekskulNameInput = document.getElementById("ekskulName");
-        const ekskulDescriptionInput = document.getElementById("ekskulDescription");
-        const ekskulImageUrlInput = document.getElementById("ekskulImageUrl");
-        const cancelEditEkskulButton = document.getElementById("cancelEditEkskul");
-
-        function renderEkskul() {
-          ekskulList.innerHTML = "";
-          ekskulData.forEach((ekskul) => {
-            const row = ekskulList.insertRow();
-            row.innerHTML = `
-              <td class="py-3 px-6 whitespace-nowrap">${ekskul.name}</td>
-              <td class="py-3 px-6">${ekskul.description}</td>
-              <td class="py-3 px-6 whitespace-nowrap">
-                <button data-id="${ekskul.id}" class="edit-ekskul-btn bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded-full text-xs mr-2 transition-colors duration-200">
-                  <i class="fas fa-edit"></i> Edit
-                </button>
-                <button data-id="${ekskul.id}" class="delete-ekskul-btn bg-red-500 hover:bg-red-600 text-white py-1 px-3 rounded-full text-xs transition-colors duration-200">
-                  <i class="fas fa-trash"></i> Hapus
-                </button>
-              </td>
-            `;
-          });
-          addEkskulEventListeners();
+        prestasiForm.reset();
+        prestasiIdInput.value = '';
+        if (prestasiImagePreviewDiv) {
+            prestasiImagePreviewDiv.innerHTML = '';
         }
-
-        function addEkskulEventListeners() {
-          document.querySelectorAll(".edit-ekskul-btn").forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const id = parseInt(e.target.dataset.id);
-              const ekskul = ekskulData.find((ex) => ex.id === id);
-              if (ekskul) {
-                ekskulIdInput.value = ekskul.id;
-                ekskulNameInput.value = ekskul.name;
-                ekskulDescriptionInput.value = ekskul.description;
-                ekskulImageUrlInput.value = ekskul.imageUrl || "";
-                cancelEditEkskulButton.style.display = "inline-block";
-              }
-            });
-          });
-
-          document.querySelectorAll(".delete-ekskul-btn").forEach((button) => {
-            button.addEventListener("click", (e) => {
-              const id = parseInt(e.target.dataset.id);
-              if (confirm("Yakin ingin menghapus ekstrakurikuler ini?")) {
-                ekskulData = ekskulData.filter((ex) => ex.id !== id);
-                renderEkskul();
-              }
-            });
-          });
+        if (simpanPrestasiBtn) {
+            simpanPrestasiBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Simpan Prestasi';
+            simpanPrestasiBtn.disabled = false;
         }
+        if (cancelEditPrestasiBtn) {
+            cancelEditPrestasiBtn.style.display = 'none';
+        }
+        if (prestasiImageFilesInput) {
+            prestasiImageFilesInput.value = '';
+        }
+        prestasiTahunInput.value = '';
+    }
 
-        ekskulForm.addEventListener("submit", (e) => {
-          e.preventDefault();
-          const id = ekskulIdInput.value;
-          const newEkskul = {
-            name: ekskulNameInput.value,
-            description: ekskulDescriptionInput.value,
-            imageUrl: ekskulImageUrlInput.value,
-          };
+    // Fungsi untuk mengisi form dengan data prestasi yang akan diedit
+    async function editPrestasi(id) {
+        try {
+            const response = await fetch(`/api/prestasis/${id}`, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
 
-          if (id) {
-            ekskulData = ekskulData.map((ekskul) =>
-              ekskul.id === parseInt(id)
-                ? { ...ekskul, ...newEkskul }
-                : ekskul
-            );
-            ekskulIdInput.value = "";
-            cancelEditEkskulButton.style.display = "none";
-          } else {
-            newEkskul.id = ekskulData.length > 0 ? Math.max(...ekskulData.map(ex => ex.id)) + 1 : 1;
-            ekskulData.push(newEkskul);
-          }
-          ekskulForm.reset();
-          renderEkskul();
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                throw new Error(errorData.message || 'Gagal mengambil data prestasi untuk diedit.');
+            }
+
+            const prestasi = await response.json();
+
+            prestasiIdInput.value = prestasi.id;
+            prestasiTitleInput.value = prestasi.judul;
+            prestasiAchieverInput.value = prestasi.pencapai;
+            prestasiPeriodeInput.value = prestasi.periode;
+            prestasiTahunInput.value = prestasi.tahun;
+            prestasiDescriptionInput.value = prestasi.deskripsi_singkat;
+
+            // Tampilkan gambar yang sudah ada
+            if (prestasiImagePreviewDiv) {
+                prestasiImagePreviewDiv.innerHTML = '';
+                if (prestasi.gambar && Array.isArray(prestasi.gambar) && prestasi.gambar.length > 0) {
+                    prestasi.gambar.forEach(imgUrl => {
+                        const imgWrapper = document.createElement('div');
+                        imgWrapper.classList.add('relative');
+
+                        const img = document.createElement('img');
+                        img.src = `/${imgUrl}`; // Path relatif dari public folder
+                        img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
+                        imgWrapper.appendChild(img);
+
+                        const deleteImgBtn = document.createElement('button');
+                        deleteImgBtn.classList.add(
+                            'absolute', 'top-1', 'right-1', 'bg-red-500', 'text-white', 'rounded-full',
+                            'w-6', 'h-6', 'flex', 'items-center', 'justify-center', 'text-xs', 'opacity-80',
+                            'hover:opacity-100', 'transition-opacity'
+                        );
+                        deleteImgBtn.innerHTML = '<i class="fas fa-times"></i>';
+                        deleteImgBtn.dataset.imagePath = imgUrl; // Simpan path gambar di data-attribute
+                        deleteImgBtn.addEventListener('click', function() {
+                            if (confirm('Yakin ingin menghapus gambar ini dari prestasi? (Perubahan akan disimpan saat prestasi diupdate)')) {
+                                imgWrapper.remove();
+                            }
+                        });
+                        imgWrapper.appendChild(deleteImgBtn);
+                        prestasiImagePreviewDiv.appendChild(imgWrapper);
+                    });
+                }
+            }
+
+            // Ubah teks tombol dan tampilkan tombol batal
+            if (simpanPrestasiBtn) {
+                simpanPrestasiBtn.innerHTML = '<i class="fas fa-sync-alt mr-2"></i>Update Prestasi';
+            }
+            if (cancelEditPrestasiBtn) {
+                cancelEditPrestasiBtn.style.display = 'inline-block';
+            }
+
+            showCustomAlert('Mode edit aktif untuk prestasi: ' + prestasi.judul);
+
+        } catch (error) {
+            console.error("Error saat mengambil data prestasi untuk edit:", error);
+            showCustomAlert("Gagal memuat data edit: " + error.message);
+        }
+    }
+
+    // Fungsi untuk menghapus prestasi
+    async function deletePrestasi(id) {
+        showConfirmModal("Apakah Anda yakin ingin menghapus prestasi ini?", async function(result) {
+            if (result) {
+                try {
+                    const url = `/api/prestasis/${id}`;
+                    const method = 'DELETE';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        headers: {
+                            'X-CSRF-TOKEN': window.Laravel.csrfToken,
+                            'Accept': 'application/json'
+                        },
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({ message: response.statusText }));
+                        throw new Error(errorData.message || 'Gagal menghapus prestasi dari server.');
+                    }
+
+                    showCustomAlert('Prestasi berhasil dihapus!');
+                    loadPrestasis(); // Panggil ulang untuk refresh tabel
+                    resetPrestasiForm(); // Reset form kalau-kalau lagi mode edit prestasi yang dihapus
+                } catch (error) {
+                    console.error("Error saat menghapus prestasi:", error);
+                    showCustomAlert("Gagal menghapus prestasi: " + error.message);
+                }
+            } else {
+                showCustomAlert('Penghapusan prestasi dibatalkan.');
+            }
         });
+    }
 
-        cancelEditEkskulButton.addEventListener("click", () => {
-          ekskulForm.reset();
-          ekskulIdInput.value = "";
-          cancelEditEkskulButton.style.display = "none";
+    // Event Listener untuk preview gambar prestasi
+    if (prestasiImageFilesInput) {
+        prestasiImageFilesInput.addEventListener('change', function() {
+            if (prestasiImagePreviewDiv) {
+                prestasiImagePreviewDiv.innerHTML = '';
+            }
+            if (this.files && this.files.length > 0) {
+                for (const file of this.files) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
+                        if (prestasiImagePreviewDiv) {
+                            prestasiImagePreviewDiv.appendChild(img);
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
         });
+    }
+
+    // Event Listener untuk submit form prestasi (CREATE & UPDATE)
+    if (prestasiForm) {
+        prestasiForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const prestasiId = prestasiIdInput.value;
+            const url = prestasiId ? `/api/prestasis/${prestasiId}` : '/api/prestasis';
+            const method = 'POST';
+
+            const formData = new FormData();
+            formData.append('judul', prestasiTitleInput.value);
+            formData.append('pencapai', prestasiAchieverInput.value);
+            formData.append('periode', prestasiPeriodeInput.value);
+            formData.append('tahun', prestasiTahunInput.value); 
+            formData.append('deskripsi_singkat', prestasiDescriptionInput.value);
+
+            if (prestasiImageFilesInput && prestasiImageFilesInput.files.length > 0) {
+                for (const file of prestasiImageFilesInput.files) {
+                    formData.append('gambar_baru[]', file);
+                }
+            }
+
+            // Tambahkan gambar lama yang masih ada di preview (saat mode edit)
+            if (prestasiId && prestasiImagePreviewDiv) {
+                const existingImages = prestasiImagePreviewDiv.querySelectorAll('img');
+                existingImages.forEach(img => {
+                    // Hanya tambahkan gambar yang berasal dari path lama
+                    if (img.src.includes('/assets/prestasi_images/')) {
+                        const pathSegments = img.src.split('/assets/prestasi_images/');
+                        if (pathSegments.length > 1) {
+                            formData.append('gambar_lama[]', 'assets/prestasi_images/' + pathSegments[1]);
+                        }
+                    }
+                });
+            }
+
+            if (prestasiId) {
+                formData.append('_method', 'PATCH');
+            }
+
+            formData.append('_token', window.Laravel.csrfToken);
+
+            if (simpanPrestasiBtn) {
+                simpanPrestasiBtn.disabled = true;
+                simpanPrestasiBtn.innerHTML = prestasiId ? 'Mengupdate...' : 'Menyimpan...';
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    let errorMessage = data.message || 'Terjadi kesalahan saat menyimpan prestasi.';
+                    if (data.errors) {
+                        errorMessage += "\n" + Object.values(data.errors).map(e => e.join(', ')).join('\n');
+                    }
+                    throw new Error(errorMessage);
+                }
+
+                showCustomAlert(data.message || (prestasiId ? 'Prestasi berhasil diupdate!' : 'Prestasi berhasil disimpan!'));
+                resetPrestasiForm();
+                loadPrestasis(); // Refresh daftar prestasi
+
+            } catch (error) {
+                console.error("Error saat menyimpan/mengupdate prestasi:", error);
+                showCustomAlert("Gagal menyimpan/mengupdate prestasi: " + error.message);
+            } finally {
+                if (simpanPrestasiBtn) {
+                    simpanPrestasiBtn.disabled = false;
+                    simpanPrestasiBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Simpan Prestasi';
+                }
+            }
+        });
+    }
 
 
-        // Inisialisasi: Tampilkan Manajemen Berita saat pertama kali dimuat
-        showAdminSection("manage-berita");
-        renderBerita();
-        renderPrestasi();
-        renderEkskul();
+}); // Tutup DOMContentLoaded
