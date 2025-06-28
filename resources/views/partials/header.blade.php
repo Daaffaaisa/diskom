@@ -16,9 +16,12 @@
         <span>smp44semarang@gmail.com</span>
       </div>
       <div class="flex items-center gap-x-5">
-        <a href="https://www.facebook.com/people/SMP-Negeri-44-Semarang/100064020735234/#" target="_blank" class="hover:text-purple-400"><i class="fab fa-facebook-f text-xl"></i></a>
-        <a href="https://x.com/smp44_smg" target="_blank" class="hover:text-purple-400"><i class="fab fa-twitter text-xl"></i></a>
-        <a href="https://www.youtube.com/channel/UCM0V0BMKAGiJ-o4kyhneTew" target="_blank" class="hover:text-purple-400"><i class="fab fa-youtube text-xl"></i></a>
+        <a href="https://www.facebook.com/people/SMP-Negeri-44-Semarang/100064020735234/#" target="_blank"
+          class="hover:text-purple-400"><i class="fab fa-facebook-f text-xl"></i></a>
+        <a href="https://x.com/smp44_smg" target="_blank" class="hover:text-purple-400"><i
+            class="fab fa-twitter text-xl"></i></a>
+        <a href="https://www.youtube.com/channel/UCM0V0BMKAGiJ-o4kyhneTew" target="_blank"
+          class="hover:text-purple-400"><i class="fab fa-youtube text-xl"></i></a>
       </div>
 
       @auth
@@ -44,11 +47,7 @@
                 class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
                 Admin</a>
             @else
-              <a href="{{ route('dashboard.user.siswa') }}"
-                class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Dashboard
-                Siswa</a>
               <a href="/dashboard/kalender" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Kalender Akademik</a>
-              <a href="#" class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">Pembayaran</a>
               <a href="#" id="keluhKesahButton" role="button"
                 class="block px-4 py-3 w-full hover:bg-gray-100 text-sm">
                 Keluh Kesah

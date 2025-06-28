@@ -322,10 +322,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         window.location.href = '/'; // Paksa redirect
                         return; // Hentikan pemrosesan promise lebih lanjut
                     }
-
-                    // Jika respons berhasil (2xx status code)
-                    // PENTING: Baik response.ok maupun response.redirected (jika terjadi) harus memicu redirect penuh
-                    // Karena fetch tidak otomatis memuat halaman baru setelah redirect internal.
                     if (response.ok || response.redirected) { // Menggabungkan kondisi
                         console.log("Logout successful. Forcing full page navigation to homepage.");
                         showCustomAlert("Logout berhasil. Anda akan diarahkan ke halaman utama.", "success");
@@ -1398,7 +1394,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ========== CRUD USER (Manajemen USEr) LOGIC ========= //
-    // --- User Functions ---
+
 // Fungsi untuk memuat dan menampilkan user dari API (READ)
 async function loadUsers() {
     if (!userListBody) {
@@ -1597,7 +1593,7 @@ if (userForm) {
         if (userPasswordInput.value) {
             formData.append('password', userPasswordInput.value);
         }
-        formData.append('role', userRoleInput.value); // Menggunakan userRoleInput.value
+        formData.append('role', userRoleInput.value);
 
         if (userId) {
             formData.append('_method', 'PATCH');
@@ -1645,9 +1641,6 @@ if (userForm) {
                     throw new Error(`Non-JSON server error: ${response.status} ${response.statusText}. Response part: ${truncatedText}...`);
                 }
             }
-
-            // Jika sampai sini, response.ok adalah true (status 2xx)
-            // responseData harusnya berisi data sukses dari server
             if (!responseData) { // Jika belum terisi dari 422 atau non-OK branch (fallback)
                 responseData = await response.json();
             }
