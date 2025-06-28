@@ -16,9 +16,9 @@
         <span>smp44semarang@gmail.com</span>
       </div>
       <div class="flex items-center gap-x-5">
-        <a href="#" target="_blank" class="hover:text-blue-300"><i class="fab fa-facebook-f text-xl"></i></a>
-        <a href="#" target="_blank" class="hover:text-blue-300"><i class="fab fa-twitter text-xl"></i></a>
-        <a href="#" target="_blank" class="hover:text-blue-300"><i class="fab fa-youtube text-xl"></i></a>
+        <a href="https://www.facebook.com/people/SMP-Negeri-44-Semarang/100064020735234/#" target="_blank" class="hover:text-purple-400"><i class="fab fa-facebook-f text-xl"></i></a>
+        <a href="https://x.com/smp44_smg" target="_blank" class="hover:text-purple-400"><i class="fab fa-twitter text-xl"></i></a>
+        <a href="https://www.youtube.com/channel/UCM0V0BMKAGiJ-o4kyhneTew" target="_blank" class="hover:text-purple-400"><i class="fab fa-youtube text-xl"></i></a>
       </div>
 
       @auth
@@ -78,22 +78,22 @@
       class="absolute top-4 right-6 text-white text-2xl font-bold hover:text-yellow-300">&times;</button>
 
     <div class="flex items-center justify-center mb-6">
-      <img src="https://placehold.co/60x60/3498db/ffffff?text=LOGO" alt="Logo SMPN 44"
+      <img src="{{ asset('assets/header/logo.png') }}" alt="Logo SMPN 44"
         class="h-16 w-16 mr-3 rounded-full shadow-md" />
-      <h2 class="text-3xl font-bold">Login Pengguna</h2>
+      <h2 class="text-3xl font-bold">Halaman Login</h2>
     </div>
 
     <p class="text-center text-lg mb-8 text-purple-100">
-      Silakan masukkan username dan password Anda.
+      Silakan masukkan email dan password Anda.
     </p>
 
     <form id="loginForm" class="space-y-6">
       @csrf
       <div>
-        <label for="modal-username" class="block text-purple-100 text-sm font-bold mb-2">Username:</label>
+        <label for="modal-username" class="block text-purple-100 text-sm font-bold mb-2">Email:</label>
         <input type="text" id="modal-username" name="email"
           class="bg-white shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-purple-500 transition-colors duration-200"
-          placeholder="Masukkan username Anda" required />
+          placeholder="Masukkan email Anda" required />
       </div>
       <div>
         <label for="modal-password" class="block text-purple-100 text-sm font-bold mb-2">Password:</label>

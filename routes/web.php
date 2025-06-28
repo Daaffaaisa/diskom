@@ -8,18 +8,13 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\PrestasiPublicController;
 use App\Http\Controllers\EkstrakurikulerPublicController;
-
-
+use App\Http\Controllers\HomeController;
 
 // === BERANDA UTAMA ===
-Route::get('/', function () {
-    return view('pages.beranda');
-})->name('pages.beranda');
+Route::get('/', [HomeController::class, 'index'])->name('pages.beranda');   
+
 
 // === HALAMAN LAIN ===
-Route::get('/pages/beranda', function () {
-    return view('pages.beranda');
-});
 
 Route::get('/pages/profile', function () {
     return view('pages.profile');
@@ -57,11 +52,6 @@ foreach ($years as $year) {
 }
 
 // === AUTENTIKASI DAN DASHBOARD ===
-
-// Ini adalah route untuk menangani jika ada yang mencoba GET /login
-// Kita arahkan ke halaman beranda karena modal login sudah ada di sana.
-// Kita tidak akan memberi nama 'login' pada route GET ini untuk menghindari konflik
-// dengan internal Laravel yang mungkin masih mencari 'login' untuk menampilkan form.
 Route::get('/login', function () {
     return redirect('/');
 })->name('login');

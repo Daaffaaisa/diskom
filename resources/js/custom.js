@@ -301,7 +301,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Fungsi confirmLogout dipanggil.");
         if (typeof window.Laravel === 'undefined' || !window.Laravel.logoutUrl || !window.Laravel.csrfToken) {
             console.error("Kesalahan: Variabel Laravel.logoutUrl atau Laravel.csrfToken tidak terdefinisi.");
-            showCustomAlert("Terjadi kesalahan saat logout. Data aplikasi tidak lengkap.");
+            showCustomAlert("Terjadi kesalahan saat logout. Data aplikasi tidak lengkap.", "error");
             return;
         }
 
@@ -312,31 +312,48 @@ document.addEventListener("DOMContentLoaded", function () {
                     headers: {
                         'X-CSRF-TOKEN': window.Laravel.csrfToken,
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
                     }
                 })
-                    .then(response => {
-                        if (response.ok) {
-                            window.location.reload(true);
-                            return;
-                        } else {
-                            const contentType = response.headers.get("content-type");
-                            if (contentType && contentType.indexOf("application/json") !== -1) {
-                                return response.json().then(errorData => {
-                                    throw new Error(errorData.message || "Gagal logout dari server dengan respons JSON.");
-                                });
-                            } else {
-                                return response.text().then(errorText => {
-                                    const truncatedText = errorText.substring(0, 200);
-                                    throw new Error(`Gagal logout dari server: ${response.status} ${response.statusText}. Respon: ${truncatedText}...`);
-                                });
-                            }
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Terjadi kesalahan saat logout:", error);
-                        showCustomAlert("Gagal logout. Coba lagi: " + error.message);
-                    });
+                .then(response => {
+                    // Tangani 419 (Page Expired) atau 401 (Unauthorized) secara eksplisit
+                    if (response.status === 419 || response.status === 401) {
+                        console.warn("Logout attempt: CSRF token expired or unauthorized (419/401). Forcing redirect to homepage.");
+                        showCustomAlert("Sesi Anda telah berakhir atau token tidak valid. Anda akan diarahkan ke halaman utama.", "warning");
+                        window.location.href = '/'; // Paksa redirect
+                        return; // Hentikan pemrosesan promise lebih lanjut
+                    }
+
+                    // Jika respons berhasil (2xx status code)
+                    // PENTING: Baik response.ok maupun response.redirected (jika terjadi) harus memicu redirect penuh
+                    // Karena fetch tidak otomatis memuat halaman baru setelah redirect internal.
+                    if (response.ok || response.redirected) { // Menggabungkan kondisi
+                        console.log("Logout successful. Forcing full page navigation to homepage.");
+                        showCustomAlert("Logout berhasil. Anda akan diarahkan ke halaman utama.", "success");
+                        window.location.href = '/'; // <--- INI KUNCI: SELALU PAKSA REDIRECT DI SINI JIKA SUKSES
+                        return; // Hentikan promise chain
+                    } 
+                    
+                    // Jika ada status error lain selain 419/401
+                    const contentType = response.headers.get("content-type");
+                    if (contentType && contentType.includes("application/json")) {
+                        return response.json().then(errorData => {
+                            throw new Error(errorData.message || `Server error: ${response.status} ${response.statusText}`);
+                        });
+                    } else {
+                        // Jika bukan JSON, mungkin itu halaman error HTML (seperti 500 Internal Server Error)
+                        return response.text().then(errorText => {
+                            const truncatedText = errorText.substring(0, 200); 
+                            throw new Error(`Non-JSON server error: ${response.status} ${response.statusText}. Response part: ${truncatedText}...`);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("Terjadi kesalahan saat logout:", error);
+                    // Tampilkan error jika bukan error yang sudah ditangani (misal network error)
+                    if (!error.message.includes("Sesi Anda telah berakhir") && !error.message.includes("token tidak valid")) {
+                         showCustomAlert("Gagal logout. Terjadi kesalahan jaringan atau server: " + error.message);
+                    }
+                });
             }
         });
     }
@@ -372,7 +389,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const prestasiImageFilesInput = document.getElementById("prestasiImageFiles");
     const prestasiImagePreviewDiv = document.getElementById("prestasiImagePreview");
     const simpanPrestasiBtn = prestasiForm ? prestasiForm.querySelector('button[type="submit"]') : null;
-    const cancelEditPrestasiBtn = document.getElementById("cancelEditPrestasi");
+    const cancelEditPrestasiBtn = document.getElementById("cancelEditPrestasi"); 
 
     // Variabel untuk elemen-elemen form dan tabel ekstrakurikuler
     const ekskulListBody = document.getElementById("ekskulList");
@@ -407,8 +424,8 @@ document.addEventListener("DOMContentLoaded", function () {
             loadBeritas();
         } else if (targetId === 'manage-prestasi') {
             loadPrestasis();
-        } else if (targetId === 'manage-ekstrakurikuler') { // <--- TAMBAHKAN INI
-            loadEkskuls(); // Panggil fungsi untuk memuat ekstrakurikuler
+        } else if (targetId === 'manage-ekstrakurikuler') {
+            loadEkskuls();
         }
     }
 
@@ -568,7 +585,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         imgWrapper.classList.add('relative');
 
                         const img = document.createElement('img');
-                        img.src = `/${imgUrl}`;
+                        img.src = `/${imgUrl}`; // Path relatif dari public folder
                         img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
                         imgWrapper.appendChild(img);
 
@@ -579,7 +596,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             'hover:opacity-100', 'transition-opacity'
                         );
                         deleteImgBtn.innerHTML = '<i class="fas fa-times"></i>';
-                        deleteImgBtn.dataset.imagePath = imgUrl;
+                        deleteImgBtn.dataset.imagePath = imgUrl; // Simpan path gambar di data-attribute
                         deleteImgBtn.addEventListener('click', function() {
                             if (confirm('Yakin ingin menghapus gambar ini dari berita? (Perubahan akan disimpan saat berita diupdate)')) {
                                 imgWrapper.remove();
@@ -1188,7 +1205,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         imgWrapper.classList.add('relative');
 
                         const img = document.createElement('img');
-                        img.src = `/${imgUrl}`; // Path relatif dari public folder
+                        img.src = `/${imgUrl}`;
                         img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
                         imgWrapper.appendChild(img);
 
@@ -1199,7 +1216,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             'hover:opacity-100', 'transition-opacity'
                         );
                         deleteImgBtn.innerHTML = '<i class="fas fa-times"></i>';
-                        deleteImgBtn.dataset.imagePath = imgUrl; // Simpan path gambar di data-attribute
+                        deleteImgBtn.dataset.imagePath = imgUrl;
                         deleteImgBtn.addEventListener('click', function() {
                             if (confirm('Yakin ingin menghapus gambar ini dari ekstrakurikuler? (Perubahan akan disimpan saat ekstrakurikuler diupdate)')) {
                                 imgWrapper.remove();
@@ -1316,7 +1333,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             if (ekskulId) {
-                formData.append('_method', 'PATCH'); // Perhatikan, ini harus PATCH, bukan PUT, agar konsisten dengan controller Laravel resource.
+                formData.append('_method', 'PATCH');
             }
 
             formData.append('_token', window.Laravel.csrfToken);

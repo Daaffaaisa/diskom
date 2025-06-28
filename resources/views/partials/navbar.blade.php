@@ -3,7 +3,7 @@
   <div class="container mx-auto">
     <ul class="flex flex-wrap justify-center gap-x-8  text-lg font-semibold">
       <li>
-        <a href="/pages/beranda"
+        <a href="{{ route('pages.beranda') }}"
           class="ml-4 text-black hover:text-[#E9C5DC] py-2 px-3 rounded-md transition-colors duration-200 active-tab">Beranda</a>
       </li>
       <li>

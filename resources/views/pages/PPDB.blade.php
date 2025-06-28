@@ -17,7 +17,7 @@
           Siap untuk menjadi bagian dari keluarga besar SMPN 44 Semarang?
         </p>
         <a href="https://ppd.semarangkota.go.id/smp" target="_blank"
-          class="bg-[#6F2C5C] hover:bg-green-700 text-white font-bold py-4 px-8 rounded-full text-2xl shadow-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center">
+          class="bg-[#6F2C5C] text-white font-bold py-4 px-8 rounded-full text-2xl shadow-xl transition-all duration-300 transform hover:scale-105 inline-flex items-center">
           Daftar Sekarang! <i class="fas fa-external-link-alt ml-3"></i>
         </a>
         <p class="text-gray-500 text-sm mt-3">

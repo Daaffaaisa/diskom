@@ -18,6 +18,11 @@
           data-target="manage-ekstrakurikuler">
           <i class="fas fa-running mr-3"></i>Manajemen Ekstrakurikuler
         </a>
+        <a href="#"
+          class="block py-3 px-4 rounded-md hover:bg-[#B7669A] transition-colors duration-200 sidebar-link"
+          data-target="manage-user">
+          <i class="fas fa-users-cog mr-3"></i>Manajemen User
+        </a>
       </nav>
     </aside>
 
@@ -245,6 +250,83 @@
             </thead>
             <tbody id="ekskulList" class="text-gray-700 text-sm">
               {{-- Data ekstrakurikuler akan dimuat di sini oleh JavaScript --}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {{-- Manajemen User Section --}}
+      <section id="manage-user"
+        class="admin-content-section bg-blue-50 p-6 rounded-lg shadow-md border border-blue-200 hidden">
+        <h2 class="text-3xl font-extrabold text-blue-800 mb-6 border-b-4 border-blue-500 pb-2">
+          Manajemen User
+        </h2>
+
+        {{-- Form Tambah/Edit User --}}
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">
+            Tambah/Edit User
+          </h3>
+          <form id="userForm" class="space-y-4">
+            <input type="hidden" id="userId" />
+            <div>
+              <label for="userName" class="block text-gray-700 text-sm font-bold mb-2">Nama:</label>
+              <input type="text" id="userName"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Masukkan nama user" required />
+            </div>
+            <div>
+              <label for="userEmail" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+              <input type="email" id="userEmail"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Masukkan email user" required />
+            </div>
+            <div>
+              <label for="userPassword" class="block text-gray-700 text-sm font-bold mb-2">Password:</label>
+              <input type="password" id="userPassword"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                placeholder="Isi untuk password baru/ubah password" />
+              <p class="text-xs text-gray-500 mt-1">Biarkan kosong jika tidak ingin mengubah password.</p>
+            </div>
+            <div>
+              <label for="userRole" class="block text-gray-700 text-sm font-bold mb-2">Role:</label>
+              <select id="userRole"
+                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                required>
+                <option value="">Pilih Role</option>
+                <option value="admin">Admin</option>
+                <option value="user">User</option>
+                <option value="siswa">Siswa</option>
+              </select>
+            </div>
+            <div class="flex justify-end space-x-4">
+              <button type="submit"
+                class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
+                <i class="fas fa-save mr-2"></i>Simpan User
+              </button>
+              <button type="button" id="cancelEditUser"
+                class="bg-gray-400 hover:bg-gray-500 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105"
+                style="display: none;">
+                <i class="fas fa-times mr-2"></i>Batal
+              </button>
+            </div>
+          </form>
+        </div>
+
+        {{-- Tabel Daftar User --}}
+        <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto">
+          <h3 class="text-2xl font-bold text-gray-800 mb-4">Daftar User</h3>
+          <table class="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr class="bg-gray-100 text-gray-600 uppercase text-sm leading-normal">
+                <th class="py-3 px-6 text-left">Nama</th>
+                <th class="py-3 px-6 text-left">Email</th>
+                <th class="py-3 px-6 text-left">Role</th>
+                <th class="py-3 px-6 text-left">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="userList" class="text-gray-700 text-sm">
+              {{-- Data user akan dimuat di sini oleh JavaScript --}}
             </tbody>
           </table>
         </div>
