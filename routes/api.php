@@ -32,4 +32,4 @@ Route::resource('prestasis', PrestasiController::class)->except(['create', 'edit
 Route::resource('ekstrakurikulers', EkstrakurikulerController::class)->except(['create', 'edit']);
 
 // Route untuk CRUD User
-Route::resource('users', UserController::class)->except(['create', 'edit']); // <--- TAMBAHKAN BARIS INI
+Route::resource('users', UserController::class)->except(['create', 'edit']);

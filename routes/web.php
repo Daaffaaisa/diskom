@@ -74,6 +74,8 @@ Route::middleware('auth')->post('/keluh-kesah', [KeluhKesahController::class, 's
 
 // === BERITA DINAMIS ===
 
+Route::resource('ekstrakurikuler', EkstrakurikulerController::class)->except(['create', 'edit']);
+
 
 // ... (rute-rute dashboard admin di bawahnya, seperti ini) ...
 
