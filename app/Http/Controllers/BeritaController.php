@@ -18,7 +18,18 @@ class BeritaController extends Controller
         $beritas = Berita::orderBy('created_at', 'desc')->get();
         
         // Kembalikan data dalam format JSON
-        return response()->json($beritas);
+        $formatted = $beritas->map(function ($berita) {
+    return [
+        'id' => $berita->id,
+        'judul' => $berita->judul,
+        'tanggal' => \Carbon\Carbon::parse($berita->tanggal)->format('Y-m-d'),
+        'konten' => $berita->konten,
+        'gambar' => $berita->gambar,
+    ];
+});
+
+return response()->json($formatted);
+
     }
 
     /**
@@ -90,7 +101,14 @@ if ($request->hasFile('gambar_baru')) {
     public function show(Berita $berita)
     {
         // Kembalikan data satu berita dalam format JSON
-        return response()->json($berita);
+        return response()->json([
+    'id' => $berita->id,
+    'judul' => $berita->judul,
+    'tanggal' => \Carbon\Carbon::parse($berita->tanggal)->format('Y-m-d'),
+    'konten' => $berita->konten,
+    'gambar' => $berita->gambar,
+]);
+
     }
 
     /**

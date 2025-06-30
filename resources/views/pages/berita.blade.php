@@ -53,8 +53,8 @@
             </h4>
             <p class="text-gray-600 text-sm mb-4">
               {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('l, d F Y') }}</p>
-            <p class="text-gray-700 leading-relaxed line-clamp-3">
-              {{ Str::limit($berita->konten, 150) }}
+            <p class="text-gray-700 leading-relaxed">
+              {{$berita->konten}}
             </p>
             {{-- Link ke detail berita (jika nanti ada) --}}
             {{-- <a href="{{ route('berita.show', $berita->id) }}" class="text-[#8B3A75] hover:underline mt-2 inline-block">Baca Selengkapnya</a> --}}

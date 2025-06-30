@@ -148,16 +148,6 @@
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 placeholder="Deskripsi singkat prestasi..." required></textarea>
             </div>
-            {{-- Bagian Upload Gambar untuk Prestasi --}}
-            <div>
-              <label for="prestasiImageFiles" class="block text-gray-700 text-sm font-bold mb-2">Upload Gambar (Pilih
-                Banyak):</label>
-              <input type="file" id="prestasiImageFiles" name="gambar_baru[]"
-                class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                multiple accept="image/*" />
-              <div id="prestasiImagePreview" class="mt-2 grid grid-cols-2 gap-2"></div>
-            </div>
-            {{-- Akhir Bagian Upload Gambar --}}
             <div class="flex justify-end space-x-4">
               <button type="submit"
                 class="bg-[#6F2C5C] hover:bg-green-600 text-white font-bold py-2 px-4 rounded-full transition-all duration-200 transform hover:scale-105">
@@ -218,18 +208,9 @@
                 class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
                 placeholder="Contoh: Guru BK, Kepala Sekolah" required />
             </div>
-
-            <!-- Bidang Studi -->
-            <div>
-              <label for="guruTendikBidang" class="block text-gray-700 text-sm font-bold mb-2">Bidang Studi:</label>
-              <input type="text" id="guruTendikBidang"
-                class="shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:shadow-outline"
-                placeholder="Contoh: Matematika, Bahasa Inggris, Keamanan" required />
-            </div>
             {{-- Bagian Upload Gambar untuk Guru --}}
             <div>
-              <label for="guruTendikImageFiles" class="block text-gray-700 text-sm font-bold mb-2">Upload Gambar (Pilih
-                Banyak):</label>
+              <label for="guruTendikImageFiles" class="block text-gray-700 text-sm font-bold mb-2">Upload Gambar:</label>
               <input type="file" id="guruTendikImageFiles" name="gambar_baru[]" {{-- Penting: nama 'gambar_baru[]' dan 'multiple' --}}
                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 multiple {{-- Untuk memungkinkan upload banyak file --}} accept="image/*" {{-- Hanya izinkan file gambar --}} />

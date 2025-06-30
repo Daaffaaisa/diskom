@@ -11,8 +11,6 @@ export function initPrestasiManager() {
     const prestasiPeriodeInput = document.getElementById("prestasiPeriode");
     const prestasiTahunInput = document.getElementById("prestasiTahun");
     const prestasiDescriptionInput = document.getElementById("prestasiDescription");
-    const prestasiImageFilesInput = document.getElementById("prestasiImageFiles");
-    const prestasiImagePreviewDiv = document.getElementById("prestasiImagePreview");
     const simpanPrestasiBtn = prestasiForm ? prestasiForm.querySelector('button[type="submit"]') : null;
     const cancelEditPrestasiBtn = document.getElementById("cancelEditPrestasi");
 
@@ -103,18 +101,12 @@ export function initPrestasiManager() {
 
         prestasiForm.reset();
         prestasiIdInput.value = '';
-        if (prestasiImagePreviewDiv) {
-            prestasiImagePreviewDiv.innerHTML = '';
-        }
         if (simpanPrestasiBtn) {
             simpanPrestasiBtn.innerHTML = '<i class="fas fa-save mr-2"></i>Simpan Prestasi';
             simpanPrestasiBtn.disabled = false;
         }
         if (cancelEditPrestasiBtn) {
             cancelEditPrestasiBtn.style.display = 'none';
-        }
-        if (prestasiImageFilesInput) {
-            prestasiImageFilesInput.value = '';
         }
         prestasiTahunInput.value = '';
     }
@@ -143,37 +135,6 @@ export function initPrestasiManager() {
             prestasiTahunInput.value = prestasi.tahun;
             prestasiDescriptionInput.value = prestasi.deskripsi_singkat;
 
-            // Tampilkan gambar yang sudah ada
-            if (prestasiImagePreviewDiv) {
-                prestasiImagePreviewDiv.innerHTML = '';
-                if (prestasi.gambar && Array.isArray(prestasi.gambar) && prestasi.gambar.length > 0) {
-                    prestasi.gambar.forEach(imgUrl => {
-                        const imgWrapper = document.createElement('div');
-                        imgWrapper.classList.add('relative');
-
-                        const img = document.createElement('img');
-                        img.src = `/${imgUrl}`; // Path relatif dari public folder
-                        img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
-                        imgWrapper.appendChild(img);
-
-                        const deleteImgBtn = document.createElement('button');
-                        deleteImgBtn.classList.add(
-                            'absolute', 'top-1', 'right-1', 'bg-red-500', 'text-white', 'rounded-full',
-                            'w-6', 'h-6', 'flex', 'items-center', 'justify-center', 'text-xs', 'opacity-80',
-                            'hover:opacity-100', 'transition-opacity'
-                        );
-                        deleteImgBtn.innerHTML = '<i class="fas fa-times"></i>';
-                        deleteImgBtn.dataset.imagePath = imgUrl; // Simpan path gambar di data-attribute
-                        deleteImgBtn.addEventListener('click', function() {
-                            if (confirm('Yakin ingin menghapus gambar ini dari prestasi? (Perubahan akan disimpan saat prestasi diupdate)')) {
-                                imgWrapper.remove();
-                            }
-                        });
-                        imgWrapper.appendChild(deleteImgBtn);
-                        prestasiImagePreviewDiv.appendChild(imgWrapper);
-                    });
-                }
-            }
 
             // Ubah teks tombol dan tampilkan tombol batal
             if (simpanPrestasiBtn) {
@@ -225,29 +186,6 @@ export function initPrestasiManager() {
         });
     }
 
-    // Event Listener untuk preview gambar prestasi
-    if (prestasiImageFilesInput) {
-        prestasiImageFilesInput.addEventListener('change', function() {
-            if (prestasiImagePreviewDiv) {
-                prestasiImagePreviewDiv.innerHTML = '';
-            }
-            if (this.files && this.files.length > 0) {
-                for (const file of this.files) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = document.createElement('img');
-                        img.src = e.target.result;
-                        img.classList.add('w-full', 'h-24', 'object-cover', 'rounded-md', 'shadow-sm');
-                        if (prestasiImagePreviewDiv) {
-                            prestasiImagePreviewDiv.appendChild(img);
-                        }
-                    };
-                    reader.readAsDataURL(file);
-                }
-            }
-        });
-    }
-
     // Event Listener untuk submit form prestasi (CREATE & UPDATE)
     if (prestasiForm) {
         prestasiForm.addEventListener("submit", async function (e) {
@@ -263,24 +201,6 @@ export function initPrestasiManager() {
             formData.append('periode', prestasiPeriodeInput.value);
             formData.append('tahun', prestasiTahunInput.value);
             formData.append('deskripsi_singkat', prestasiDescriptionInput.value);
-
-            if (prestasiImageFilesInput && prestasiImageFilesInput.files.length > 0) {
-                for (const file of prestasiImageFilesInput.files) {
-                    formData.append('gambar_baru[]', file);
-                }
-            }
-
-            if (prestasiId && prestasiImagePreviewDiv) {
-                const existingImages = prestasiImagePreviewDiv.querySelectorAll('img');
-                existingImages.forEach(img => {
-                    if (img.src.includes('/assets/prestasi_images/')) {
-                        const pathSegments = img.src.split('/assets/prestasi_images/');
-                        if (pathSegments.length > 1) {
-                            formData.append('gambar_lama[]', 'assets/prestasi_images/' + pathSegments[1]);
-                        }
-                    }
-                });
-            }
 
             if (prestasiId) {
                 formData.append('_method', 'PATCH');

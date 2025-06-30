@@ -23,7 +23,6 @@ class GuruTendikController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'bidang_studi' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -38,7 +37,6 @@ class GuruTendikController extends Controller
         $guru = GuruTendik::create([
             'nama' => $request->nama,
             'jabatan' => $request->jabatan,
-            'bidang_studi' => $request->bidang_studi,
             'foto' => $path
         ]);
 
@@ -55,7 +53,6 @@ class GuruTendikController extends Controller
         $request->validate([
             'nama' => 'required|string|max:255',
             'jabatan' => 'required|string|max:255',
-            'bidang_studi' => 'nullable|string|max:255',
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -74,7 +71,6 @@ class GuruTendikController extends Controller
         $guru->update([
             'nama' => $request->nama,
             'jabatan' => $request->jabatan,
-            'bidang_studi' => $request->bidang_studi,
             'foto' => $path
         ]);
 

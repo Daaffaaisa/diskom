@@ -198,8 +198,8 @@
                 </h4>
                 <p class="text-gray-600 text-sm mb-4">
                   {{ \Carbon\Carbon::parse($berita->tanggal)->translatedFormat('l, d F Y') }}</p>
-                <p class="text-gray-700 leading-relaxed line-clamp-3">
-                  {{ Str::limit($berita->konten, 150) }}
+                <p class="text-gray-700 leading-relaxed">
+                  {{ Str::limit($berita->konten, 450) }}
                 </p>
               </div>
             </div>

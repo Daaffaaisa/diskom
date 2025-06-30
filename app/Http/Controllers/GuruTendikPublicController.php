@@ -12,7 +12,7 @@ class GuruTendikPublicController extends Controller
      */
     public function index()
     {
-        $guruTendik = GuruTendik::orderBy('nama')->get(); // atau bisa pakai orderBy('id') juga
+        $guruTendik = GuruTendik::orderBy('id')->get(); // atau bisa pakai orderBy('id') juga
 
         return view('pages.profile', compact('guruTendik'));
     }

@@ -32,30 +32,7 @@ class PrestasiController extends Controller
             'periode' => 'required|string|max:255',
             'deskripsi_singkat' => 'nullable|string',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 5), // <--- TAMBAH VALIDASI TAHUN
-            'gambar_baru.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-        $gambarPaths = [];
-
-        // Proses upload gambar baru jika ada
-        if ($request->hasFile('gambar_baru')) {
-            foreach ($request->file('gambar_baru') as $gambar) {
-                if ($gambar->isValid()) {
-                    $fileName = time() . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
-                    $targetPath = public_path('assets/prestasi_images');
-
-                    if (!file_exists($targetPath)) {
-                        mkdir($targetPath, 0775, true);
-                    }
-
-                    $gambar->move($targetPath, $fileName);
-                    $gambarPaths[] = 'assets/prestasi_images/' . $fileName;
-                    Log::info("Prestasi: File moved successfully: " . 'assets/prestasi_images/' . $fileName);
-                } else {
-                    Log::warning("Prestasi: Invalid file uploaded: " . $gambar->getClientOriginalName() . " Error: " . $gambar->getError());
-                }
-            }
-        }
 
         $prestasi = Prestasi::create([
             'judul' => $validatedData['judul'],
@@ -63,10 +40,7 @@ class PrestasiController extends Controller
             'periode' => $validatedData['periode'],
             'deskripsi_singkat' => $validatedData['deskripsi_singkat'],
             'tahun' => $validatedData['tahun'], // <--- SIMPAN KOLOM TAHUN
-            'gambar' => $gambarPaths,
         ]);
-
-        Log::info('Prestasi created successfully:', ['id' => $prestasi->id, 'gambar_paths' => $gambarPaths]);
         return response()->json($prestasi, 201);
     }
 
@@ -94,46 +68,7 @@ class PrestasiController extends Controller
             'periode' => 'required|string|max:255',
             'deskripsi_singkat' => 'nullable|string',
             'tahun' => 'required|integer|min:1900|max:' . (date('Y') + 5), // <--- TAMBAH VALIDASI TAHUN
-            'gambar_lama' => 'nullable|array',
-            'gambar_lama.*' => 'string',
-            'gambar_baru.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-        $currentGambar = $prestasi->gambar ?? [];
-        $gambarToKeep = $validatedData['gambar_lama'] ?? [];
-
-        // Hapus gambar lama yang tidak ada di 'gambar_lama'
-        foreach ($currentGambar as $path) {
-            if (!in_array($path, $gambarToKeep) && str_starts_with($path, 'assets/prestasi_images/')) {
-                $fullPathToDelete = public_path($path);
-                if (file_exists($fullPathToDelete)) {
-                    unlink($fullPathToDelete);
-                    Log::info("Prestasi: Deleted old file: " . $fullPathToDelete);
-                }
-            }
-        }
-
-        $newGambarPaths = $gambarToKeep;
-
-        // Proses upload gambar baru jika ada
-        if ($request->hasFile('gambar_baru')) {
-            foreach ($request->file('gambar_baru') as $gambar) {
-                if ($gambar->isValid()) {
-                    $fileName = time() . '_' . uniqid() . '.' . $gambar->getClientOriginalExtension();
-                    $targetPath = public_path('assets/prestasi_images');
-
-                    if (!file_exists($targetPath)) {
-                        mkdir($targetPath, 0775, true);
-                    }
-
-                    $gambar->move($targetPath, $fileName);
-                    $newGambarPaths[] = 'assets/prestasi_images/' . $fileName;
-                    Log::info("Prestasi: New file moved: " . 'assets/prestasi_images/' . $fileName);
-                } else {
-                    Log::warning("Prestasi: Invalid new file uploaded: " . $gambar->getClientOriginalName() . " Error: " . $gambar->getError());
-                }
-            }
-        }
 
         $prestasi->update([
             'judul' => $validatedData['judul'],
@@ -141,10 +76,7 @@ class PrestasiController extends Controller
             'periode' => $validatedData['periode'],
             'deskripsi_singkat' => $validatedData['deskripsi_singkat'],
             'tahun' => $validatedData['tahun'], // <--- UPDATE KOLOM TAHUN
-            'gambar' => $newGambarPaths,
         ]);
-
-        Log::info('Prestasi updated successfully:', ['id' => $prestasi->id, 'gambar_paths' => $newGambarPaths]);
         return response()->json($prestasi);
     }
 
@@ -154,19 +86,6 @@ class PrestasiController extends Controller
     public function destroy(string $id)
     {
         $prestasi = Prestasi::findOrFail($id);
-
-        // Hapus semua gambar terkait dari storage
-        if ($prestasi->gambar) {
-            foreach ($prestasi->gambar as $path) {
-                if (str_starts_with($path, 'assets/prestasi_images/')) {
-                    $fullPathToDelete = public_path($path);
-                    if (file_exists($fullPathToDelete)) {
-                        unlink($fullPathToDelete);
-                        Log::info("Prestasi: Deleted associated file: " . $fullPathToDelete);
-                    }
-                }
-            }
-        }
 
         $prestasi->delete();
 

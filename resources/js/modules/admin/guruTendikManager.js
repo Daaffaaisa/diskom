@@ -158,8 +158,7 @@ export function initGuruTendikManager() {
 
             formData.append('nama', guruTendikNameInput.value);
             formData.append('jabatan', guruTendikJabatanInput.value);
-            formData.append('bidang_studi', guruTendikBidangInput.value);
-
+            
             if (guruTendikImageFilesInput && guruTendikImageFilesInput.files.length > 0) {
                 formData.append('foto', guruTendikImageFilesInput.files[0]);
             }
