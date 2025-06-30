@@ -8,6 +8,7 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\EkstrakurikulerController;
 use App\Http\Controllers\PrestasiPublicController;
 use App\Http\Controllers\EkstrakurikulerPublicController;
+use App\Http\Controllers\GuruTendikPublicController;
 use App\Http\Controllers\HomeController;
 
 // === BERANDA UTAMA ===
@@ -16,9 +17,7 @@ Route::get('/', [HomeController::class, 'index'])->name('pages.beranda');
 
 // === HALAMAN LAIN ===
 
-Route::get('/pages/profile', function () {
-    return view('pages.profile');
-});
+Route::get('/pages/profile', [GuruTendikPublicController::class, 'index'])->name('pages.profile.public.idex');
 
 Route::get('/pages/berita', [BeritaPublicController::class, 'index'])->name('pages.berita.public.index');
 

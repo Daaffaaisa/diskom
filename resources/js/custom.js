@@ -7,8 +7,9 @@ import { initAjaxLogin, initLogoutHandler } from './modules/auth';
 import { initAdminSectionNavigation } from './modules/admin/sectionManager';
 import { initBeritaManager } from './modules/admin/beritaManager';
 import { initPrestasiManager } from './modules/admin/prestasiManager';
-import { initEkskulManager } from './modules/admin/ekskulManager';
+import { initGuruTendikManager } from './modules/admin/guruTendikManager';
 import { initUserManager } from './modules/admin/userManager';
+import {initKeluhKesahAdmin} from './modules/admin/KeluhKesah';
 
 document.addEventListener("DOMContentLoaded", function () {
     // ========== Navbar ========== //
@@ -49,13 +50,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // ========== CRUD LOGIC ========= //
     const loadBeritas = initBeritaManager();
     const loadPrestasi = initPrestasiManager();
-    const loadEkskuls = initEkskulManager();
+    const loadGuruTendiks = initGuruTendikManager();
     const loadUsers = initUserManager();
+    const loadKeluhKesah = initKeluhKesahAdmin();
 
     initAdminSectionNavigation({
         'manage-berita': loadBeritas,
         'manage-prestasi': loadPrestasi,
-        'manage-ekstrakurikuler': loadEkskuls,
-        'manage-user': loadUsers
+        'manage-guru': loadGuruTendiks,
+        'manage-user': loadUsers,
+        'manage-keluh': loadKeluhKesah
     });
 }); // Tutup DOMContentLoaded

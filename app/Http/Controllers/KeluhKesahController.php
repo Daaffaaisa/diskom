@@ -24,4 +24,10 @@ class KeluhKesahController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Pesan berhasil dikirim!']);
     }
+
+    public function index()
+{
+    return KeluhKesah::orderBy('created_at', 'desc')->get();
+}
+
 }
